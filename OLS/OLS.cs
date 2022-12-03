@@ -45,7 +45,7 @@ namespace OLS
                     if (sPrompt.Status == PromptStatus.OK)
                         runwayAlignment = trans.GetObject(sPrompt.ObjectId, OpenMode.ForRead) as Alignment;
 
-                    PromptDoubleResult RunWayWidth = ed.GetDistance(System.Environment.NewLine);
+                    //PromptDoubleResult RunWayWidth = ed.GetDistance(System.Environment.NewLine);
                     PromptResult AirportClass = ed.GetString("Insert Airport Class");
                     #endregion
 
@@ -72,14 +72,27 @@ namespace OLS
 
                     #region Drawing Surfaces
                     //TakeOff Ols
-                    TakeOff_OLS takeOff_OLS = new TakeOff_OLS(OlsDatabase.classA_DB.takeOffAttriputes, RunWayWidth.Value, startAlignment, startAlignmentVector, startPrepAlignmentVector);
-                    takeOff_OLS.CreatePolylines(acBlkTblRec , trans);
-                    takeOff_OLS.CreateSurface(_civildoc, trans);
+                    TakeOff_OLS takeOff_OLS_Start = new TakeOff_OLS(OlsDatabase.classA_DB.takeOffAttriputes, startAlignment, startAlignmentVector, startPrepAlignmentVector);
+                    takeOff_OLS_Start.CreatePolylines(acBlkTblRec , trans);
+                    takeOff_OLS_Start.CreateSurface(_civildoc, trans);
+
+                    TakeOff_OLS takeOff_OLS_End = new TakeOff_OLS(OlsDatabase.classA_DB.takeOffAttriputes, endAlignment, endAlignmentVector, endPrepAlignmentVector);
+                    takeOff_OLS_End.CreatePolylines(acBlkTblRec, trans);
+                    takeOff_OLS_End.CreateSurface(_civildoc, trans);
 
                     //Landing Ols
-                    TakeOff_OLS Landing_OLS = new TakeOff_OLS(OlsDatabase.classA_DB.takeOffAttriputes, RunWayWidth.Value, startAlignment, startAlignmentVector, startPrepAlignmentVector);
-                    Landing_OLS.CreatePolylines(acBlkTblRec, trans);
-                    Landing_OLS.CreateSurface(_civildoc, trans);
+                    Landding_OLS landing_OLS_Start = new Landding_OLS(OlsDatabase.classA_DB.landdingAttriputes, startAlignment, startAlignmentVector, startPrepAlignmentVector);
+                    landing_OLS_Start.CreatePolylines(acBlkTblRec, trans);
+                    landing_OLS_Start.CreateSurface(_civildoc, trans);
+
+                    Landding_OLS landing_OLS_End = new Landding_OLS(OlsDatabase.classA_DB.landdingAttriputes, endAlignment, endAlignmentVector, endPrepAlignmentVector);
+                    landing_OLS_End.CreatePolylines(acBlkTblRec, trans);
+                    landing_OLS_End.CreateSurface(_civildoc, trans);
+
+                    //Inner Ols
+
+                    //Transtional Ols
+
                     #endregion
                 }
                 catch (System.Exception ex)

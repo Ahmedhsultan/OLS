@@ -64,7 +64,9 @@
     <Compile Include="Services\Classfications\Database\Classes\ClassB_DB.cs" />
     <Compile Include="Services\Classfications\Database\Classes\ClassA_DB.cs" />
     <Compile Include="Services\Classfications\Database\OlsCodeAttriputesDB.cs" />
+    <Compile Include="Services\Classfications\Database\Surfaces\LanddingAttriputes.cs" />
     <Compile Include="Services\Classfications\Database\Surfaces\TakeOffAttriputes.cs" />
+    <Compile Include="Services\OLSes\Landding_OLS.cs" />
     <Compile Include="Services\OLSes\TakeOff_OLS.cs" />
   </ItemGroup>
   <ItemGroup />
