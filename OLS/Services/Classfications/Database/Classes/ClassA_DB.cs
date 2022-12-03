@@ -13,7 +13,7 @@ namespace OLS.Services.Classfications.Database.Classes
 
         public ClassA_DB()
         {
-            takeOffAttriputes = new TakeOffAttriputes(1, 1, 1, 1, 1, 1);
+            takeOffAttriputes = new TakeOffAttriputes(60, 60, 1800, 380, 0.1, 0.1);
         }
     }
 }
