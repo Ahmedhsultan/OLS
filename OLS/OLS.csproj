@@ -63,10 +63,17 @@
     <Compile Include="Services\Classfications\Database\Classes\ClassC_DB.cs" />
     <Compile Include="Services\Classfications\Database\Classes\ClassB_DB.cs" />
     <Compile Include="Services\Classfications\Database\Classes\ClassA_DB.cs" />
+    <Compile Include="Services\Classfications\Database\Classes\InterfaceClass\IClass_DB.cs" />
     <Compile Include="Services\Classfications\Database\OlsCodeAttriputesDB.cs" />
+    <Compile Include="Services\Classfications\Database\Surfaces\InnerHorizontalAttriputes.cs" />
+    <Compile Include="Services\Classfications\Database\Surfaces\TransvareAttriputes.cs" />
+    <Compile Include="Services\Classfications\Database\Surfaces\ConicalAttriputes.cs" />
     <Compile Include="Services\Classfications\Database\Surfaces\LanddingAttriputes.cs" />
     <Compile Include="Services\Classfications\Database\Surfaces\TakeOffAttriputes.cs" />
+    <Compile Include="Services\OLSes\Conical_OLS.cs" />
+    <Compile Include="Services\OLSes\InnerHorizontal_OLS.cs" />
     <Compile Include="Services\OLSes\Landding_OLS.cs" />
+    <Compile Include="Services\OLSes\Transvare_OLS.cs" />
     <Compile Include="Services\OLSes\TakeOff_OLS.cs" />
   </ItemGroup>
   <ItemGroup />
