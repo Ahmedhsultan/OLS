@@ -121,9 +121,10 @@ namespace OLS
                     conical_OLS.CreateSurface(_civildoc, trans);
 
                     //Transtional Ols
-                    Transvare_OLS transvare_OLS = new Transvare_OLS(class_DB.transvareAttriputes);
+                    Transvare_OLS transvare_OLS = new Transvare_OLS(class_DB.transvareAttriputes,class_DB.landdingAttriputes,class_DB.innerHorizontalAttriputes,
+                                        innerHorizontal_OLS, startAlignment, endAlignment,startAlignmentVector,endAlignmentVector ,startPrepAlignmentVector);
                     transvare_OLS.CreatePolylines(acBlkTblRec, trans);
-                    transvare_OLS.CreateSurface(_civildoc, trans);
+                    //transvare_OLS.CreateSurface(_civildoc, trans);
 
                     #endregion
                 }
