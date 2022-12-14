@@ -21,14 +21,14 @@ namespace OLS.Services.OLSes
 
         public Landding_OLS(LanddingAttriputes landdingAttriputes, Point3d startPoint, Vector3d vector3D, Vector3d prependicularVector)
         {
-            p0 = startPoint + (vector3D * landdingAttriputes.safeArea);
+            p0 = startPoint.Add(vector3D.MultiplyBy(landdingAttriputes.safeArea));
 
-            p1 = p0 + (prependicularVector * (landdingAttriputes.innerEdge / 2));
-            p2 = p0 - (prependicularVector * (landdingAttriputes.innerEdge / 2));
+            p1 = p0.Subtract(prependicularVector.MultiplyBy(landdingAttriputes.innerEdge / 2));
+            p2 = p0.Add(prependicularVector.MultiplyBy(landdingAttriputes.innerEdge / 2));
 
             double z1 = p0.Z + (landdingAttriputes.s1 * landdingAttriputes.l1);
             double divWidth = landdingAttriputes.l1 * landdingAttriputes.divargence;
-            p3 = p2 + (vector3D * landdingAttriputes.l1) + (prependicularVector * divWidth);
+            p3 = p2.Add(vector3D.MultiplyBy( landdingAttriputes.l1)).Add(prependicularVector.MultiplyBy(divWidth));
             p3 = new Point3d(p3.X, p3.Y, z1);
             p4 = p1 + (vector3D * landdingAttriputes.l1) - (prependicularVector * divWidth);
             p4 = new Point3d(p4.X, p4.Y, z1);
@@ -63,12 +63,12 @@ namespace OLS.Services.OLSes
 
             pl.AppendVertex(vertexP1);
             pl.AppendVertex(vertexP2);
-            pl.AppendVertex(vertexP4);
-            pl.AppendVertex(vertexP5);
-            pl.AppendVertex(vertexP8);
-            pl.AppendVertex(vertexP7);
-            pl.AppendVertex(vertexP6);
             pl.AppendVertex(vertexP3);
+            pl.AppendVertex(vertexP6);
+            pl.AppendVertex(vertexP7);
+            pl.AppendVertex(vertexP8);
+            pl.AppendVertex(vertexP5);
+            pl.AppendVertex(vertexP4);
             pl.Closed = true;
         }
 

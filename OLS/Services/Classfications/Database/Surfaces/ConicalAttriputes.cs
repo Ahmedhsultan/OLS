@@ -10,11 +10,5 @@ namespace OLS.Services.Classfications.Database.Surfaces
     {
         public double slope { get; set; }
         public double height { get; set; }
-
-        public ConicalAttriputes(double slope,double height)
-        {
-            this.slope = slope;
-            this.height = height;
-        }
     }
 }

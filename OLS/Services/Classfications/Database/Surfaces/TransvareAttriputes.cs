@@ -9,10 +9,5 @@ namespace OLS.Services.Classfications.Database.Surfaces
     public class TransvareAttriputes
     {
         public double slope { get; set; }
-
-        public TransvareAttriputes(double slope)
-        {
-            this.slope = slope;
-        }
     }
 }

@@ -3,8 +3,7 @@ using Autodesk.AutoCAD.Geometry;
 using Autodesk.Civil.ApplicationServices;
 using Autodesk.Civil.DatabaseServices;
 using OLS.Services.Classfications.Database.Surfaces;
-using System.Collections.Generic;
-using System.Linq;
+using System;
 
 namespace OLS.Services.OLSes
 {
@@ -18,34 +17,34 @@ namespace OLS.Services.OLSes
         public Point3d p3 { get; set; }
         public Point3d p4 { get; set; }
 
-        public Transvare_OLS(TransvareAttriputes transvareAttriputes, LanddingAttriputes landdingAttriputes,InnerHorizontal_OLS innerHorizontal_OLS,
+        public Transvare_OLS(TransvareAttriputes transvareAttriputes, LanddingAttriputes landdingAttriputes, InnerHorizontal_OLS innerHorizontal_OLS,
                                 Point3d startPoint, Point3d endPoint, Vector3d startVector3D, Vector3d endVector3D, Vector3d prependicularVector)
         {
             //Upper Transational OLS
-            p0 = startPoint + (startVector3D * landdingAttriputes.safeArea);
-            p1 = p0 + (prependicularVector * (landdingAttriputes.innerEdge / 2));
+            p0 = startPoint.Add(startVector3D.MultiplyBy(landdingAttriputes.safeArea));
+            p1 = p0.Add(prependicularVector.MultiplyBy(landdingAttriputes.innerEdge/2));
 
-            p00 = endPoint + (endVector3D * landdingAttriputes.safeArea);
-            p2 = p00 + (prependicularVector * (landdingAttriputes.innerEdge / 2));
+            p00 = endPoint.Add(endVector3D.MultiplyBy(landdingAttriputes.safeArea));
+            p2 = p00.Add(prependicularVector.MultiplyBy(landdingAttriputes.innerEdge / 2));
 
-            double l = (innerHorizontal_OLS.surfaceLevel- startPoint.Z)/ transvareAttriputes.slope;
             double z1 = p0.Z + (landdingAttriputes.s1 * landdingAttriputes.l1);
             double divWidth = landdingAttriputes.l1 * landdingAttriputes.divargence;
 
-            p4 = p1 + (startVector3D * landdingAttriputes.l1) + (prependicularVector * divWidth);
+            p4 = p1.Add(startVector3D.MultiplyBy(landdingAttriputes.l1)).Add(prependicularVector.MultiplyBy(divWidth));
             p4 = new Point3d(p4.X, p4.Y, z1);
-            Vector3d vector3DP4 = new Vector3d(p4.X-p1.X, p4.Y-p1.Y, p4.Z-p1.Z);
+            Vector3d vector3DP4 = new Vector3d(p4.X - p1.X, p4.Y - p1.Y, p4.Z - p1.Z);
             vector3DP4 = vector3DP4.GetNormal();
+            double l = (innerHorizontal_OLS.surfaceLevel - p1.Z) / vector3DP4.Z;
             p4 = p1 + vector3DP4 * l;
 
-            l = (innerHorizontal_OLS.surfaceLevel - endPoint.Z) / transvareAttriputes.slope;
-            z1 = p00.Z + (landdingAttriputes.s1 * landdingAttriputes.l1);
+            z1 = p00.Z +(landdingAttriputes.s1 * landdingAttriputes.l1);
             divWidth = landdingAttriputes.l1 * landdingAttriputes.divargence;
 
-            p3 = p2 + (endVector3D * landdingAttriputes.l1) + (prependicularVector * divWidth);
+            p3 = p2.Add(endVector3D * landdingAttriputes.l1).Add(prependicularVector * divWidth);
             p3 = new Point3d(p3.X, p3.Y, z1);
             Vector3d vector3DP3 = new Vector3d(p3.X - p2.X, p3.Y - p2.Y, p3.Z - p2.Z);
             vector3DP3 = vector3DP3.GetNormal();
+            l = (innerHorizontal_OLS.surfaceLevel - p2.Z ) / vector3DP3.Z;
             p3 = p2 + vector3DP3 * l;
         }
 

@@ -9,12 +9,7 @@ namespace OLS.Services.Classfications.Database.Surfaces
 {
     public class InnerHorizontalAttriputes
     {
-        public double surfaceHeightAboveRunway { get; set; }
+        public double surfaceHeightAboveRunway { get; set; } = 45;
         public double radius { get; set; }
-        public InnerHorizontalAttriputes(double radius)
-        {
-            this.radius = radius;
-            this.surfaceHeightAboveRunway = 45;
-        }
     }
 }

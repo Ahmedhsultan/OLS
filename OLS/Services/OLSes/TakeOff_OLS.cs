@@ -3,6 +3,7 @@ using Autodesk.AutoCAD.Geometry;
 using Autodesk.Civil.ApplicationServices;
 using Autodesk.Civil.DatabaseServices;
 using OLS.Services.Classfications.Database.Surfaces;
+using System;
 
 namespace OLS.Services.OLSes
 {
@@ -21,11 +22,11 @@ namespace OLS.Services.OLSes
         {
             p0 = startPoint + (vector3D * takeOffAttriputes.safeArea);
 
-            p1 = p0 + (prependicularVector * (takeOffAttriputes.innerEdge / 2));
-            p2 = p0 - (prependicularVector * (takeOffAttriputes.innerEdge / 2));
+            p1 = p0 - (prependicularVector * (takeOffAttriputes.innerEdge / 2));
+            p2 = p0 + (prependicularVector * (takeOffAttriputes.innerEdge / 2));
 
             double divWidth = (takeOffAttriputes.finalWidth - takeOffAttriputes.innerEdge) / 2;
-            double firstLength = (divWidth / takeOffAttriputes.slope);
+            double firstLength = Math.Abs(divWidth / takeOffAttriputes.divargence);
             double z2 = p0.Z + (takeOffAttriputes.slope * firstLength);
             p3 = p2 + (vector3D * firstLength) + (prependicularVector * divWidth);
             p3 = new Point3d(p3.X, p3.Y, z2);
@@ -55,10 +56,10 @@ namespace OLS.Services.OLSes
 
             pl.AppendVertex(vertexP1);
             pl.AppendVertex(vertexP2);
-            pl.AppendVertex(vertexP4);
-            pl.AppendVertex(vertexP5);
-            pl.AppendVertex(vertexP6);
             pl.AppendVertex(vertexP3);
+            pl.AppendVertex(vertexP6);
+            pl.AppendVertex(vertexP5);
+            pl.AppendVertex(vertexP4);
             pl.Closed = true;
         }
 

@@ -14,15 +14,5 @@ namespace OLS.Services.Classfications.Database.Surfaces
         public double finalWidth { get; set; }
         public double divargence { get; set; }
         public double slope { get; set; }
-
-        public TakeOffAttriputes(double safeArea, double innerEdge, double totalLength, double finalWidth, double divargence, double slope)
-        {
-            this.safeArea = safeArea;
-            this.innerEdge = innerEdge;
-            this.totalLength = totalLength;
-            this.finalWidth = finalWidth;
-            this.divargence = divargence;
-            this.slope = slope;
-        }
     }
 }
