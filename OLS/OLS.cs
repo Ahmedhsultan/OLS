@@ -11,8 +11,6 @@ using OLS.Services.Classfications.Database.Classes.InterfaceClass;
 using OLS.Services.OLSes;
 #endregion
 
-
-
 namespace OLS
 {
     public class OLS
@@ -29,8 +27,10 @@ namespace OLS
 
             using (Transaction trans = db.TransactionManager.StartTransaction())
             {
+                #region Decuments
                 BlockTable acBlkTbl = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
                 BlockTableRecord acBlkTblRec = trans.GetObject(acBlkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
+                #endregion
                 try
                 {
                     #region Selecting
@@ -146,8 +146,10 @@ namespace OLS
                 }
                 catch (System.Exception ex)
                 {
+                    #region Exception Handelling
                     ed.WriteMessage(ex.Message);
                     trans.Abort();
+                    #endregion
                 }
                 trans.Commit();
             }
