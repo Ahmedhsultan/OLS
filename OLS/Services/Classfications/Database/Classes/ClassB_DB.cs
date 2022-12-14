@@ -13,11 +13,19 @@ namespace OLS.Services.Classfications.Database.Classes
 
         public ClassB_DB()
         {
-            takeOffAttriputes = new TakeOffAttriputes(60, 60, 1800, 380, 0.1, 0.1);
-            landdingAttriputes = new LanddingAttriputes(60, 60, 15000, 0.15, 0.02, 3000, 0.025, 3600, 0, 8400);
-            innerHorizontalAttriputes = new InnerHorizontalAttriputes(2000);
-            conicalAttriputes = new ConicalAttriputes(0.05,35);
-            transvareAttriputes = new TransvareAttriputes(0.2);
+            takeOffAttriputes = new TakeOffAttriputes()
+            {
+                safeArea = 60,
+                innerEdge = 180,
+                totalLength = 15000,
+                finalWidth = 1200,
+                divargence = 0.125,
+                slope = 0.02
+            };
+            landdingAttriputes = new LanddingAttriputes(60, 280, 15000, 0.15, 0.02, 3000, 0.025, 3600, 0, 8400);
+            innerHorizontalAttriputes = new InnerHorizontalAttriputes(4000);
+            conicalAttriputes = new ConicalAttriputes(0.05,100);
+            transvareAttriputes = new TransvareAttriputes(0.143);
         }
     }
 }

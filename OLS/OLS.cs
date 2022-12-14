@@ -40,6 +40,14 @@ namespace OLS
                     if (sPrompt.Status != PromptStatus.OK)
                         trans.Commit();
                     runwayAlignment = trans.GetObject(sPrompt.ObjectId, OpenMode.ForRead) as Alignment;
+                    Profile Profile = trans.GetObject(runwayAlignment.GetProfileIds()[1], OpenMode.ForRead) as Profile;
+
+                    // check to make sure we have a profile:
+                    if (Profile == null)
+                    {
+                        ed.WriteMessage("Must have at least one alignment with one profile");
+                        return;
+                    }
 
                     //PromptDoubleResult RunWayWidth = ed.GetDistance(System.Environment.NewLine);
                     PromptKeywordOptions AirportClassOptions = new PromptKeywordOptions("");
@@ -76,7 +84,11 @@ namespace OLS
 
                     #region Deticting Geometry Points
                     Point3d startAlignment = runwayAlignment.StartPoint;
+                    double z = Profile.ElevationAt(runwayAlignment.StartingStation);
+                    startAlignment = new Point3d(startAlignment.X, startAlignment.Y, z);
                     Point3d endAlignment = runwayAlignment.EndPoint;
+                    z = Profile.ElevationAt(runwayAlignment.EndingStation);
+                    endAlignment = new Point3d(endAlignment.X, endAlignment.Y, z);
 
                     double dX = startAlignment.X - endAlignment.X;
                     double dY = startAlignment.Y - endAlignment.Y;
@@ -121,11 +133,15 @@ namespace OLS
                     conical_OLS.CreateSurface(_civildoc, trans);
 
                     //Transtional Ols
-                    Transvare_OLS transvare_OLS = new Transvare_OLS(class_DB.transvareAttriputes,class_DB.landdingAttriputes,class_DB.innerHorizontalAttriputes,
-                                        innerHorizontal_OLS, startAlignment, endAlignment,startAlignmentVector,endAlignmentVector ,startPrepAlignmentVector);
-                    transvare_OLS.CreatePolylines(acBlkTblRec, trans);
-                    //transvare_OLS.CreateSurface(_civildoc, trans);
+                    Transvare_OLS transvare_OLS_Start = new Transvare_OLS(class_DB.transvareAttriputes,class_DB.landdingAttriputes,innerHorizontal_OLS,
+                                        startAlignment, endAlignment,startAlignmentVector,endAlignmentVector ,startPrepAlignmentVector);
+                    transvare_OLS_Start.CreatePolylines(acBlkTblRec, trans);
+                    transvare_OLS_Start.CreateSurface(_civildoc, trans);
 
+                    Transvare_OLS transvare_OLS_End = new Transvare_OLS(class_DB.transvareAttriputes, class_DB.landdingAttriputes,innerHorizontal_OLS, 
+                                        startAlignment, endAlignment, startAlignmentVector, endAlignmentVector, endPrepAlignmentVector);
+                    transvare_OLS_End.CreatePolylines(acBlkTblRec, trans);
+                    transvare_OLS_End.CreateSurface(_civildoc, trans);
                     #endregion
                 }
                 catch (System.Exception ex)
