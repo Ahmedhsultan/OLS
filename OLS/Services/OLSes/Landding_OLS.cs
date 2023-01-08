@@ -42,7 +42,9 @@ namespace OLS.Services.OLSes
 
             double divWidth3 = landdingAttriputes.l3 * landdingAttriputes.divargence;
             p8 = p5 + (vector3D * landdingAttriputes.l3) - (prependicularVector * divWidth3);
+            p8 = new Point3d(p8.X, p8.Y, z2);
             p7 = p6 + (vector3D * landdingAttriputes.l3) + (prependicularVector * divWidth3);
+            p7 = new Point3d(p7.X, p7.Y, z2);
         }
 
         public void CreatePolylines(BlockTableRecord acBlkTblRec, Transaction trans)

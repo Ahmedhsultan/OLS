@@ -34,22 +34,17 @@ namespace OLS
                 try
                 {
                     #region Selecting
-                    //Select Runway Corridor
+                    //Select Runway Alignment
                     Alignment runwayAlignment = null;
                     PromptEntityResult sPrompt = ed.GetEntity("Select Runway Alignment");
                     if (sPrompt.Status != PromptStatus.OK)
-                        trans.Commit();
-                    runwayAlignment = trans.GetObject(sPrompt.ObjectId, OpenMode.ForRead) as Alignment;
-                    Profile Profile = trans.GetObject(runwayAlignment.GetProfileIds()[1], OpenMode.ForRead) as Profile;
-
-                    // check to make sure we have a profile:
-                    if (Profile == null)
                     {
-                        ed.WriteMessage("Must have at least one alignment with one profile");
+                        trans.Abort();
                         return;
                     }
+                    runwayAlignment = trans.GetObject(sPrompt.ObjectId, OpenMode.ForRead) as Alignment;
 
-                    //PromptDoubleResult RunWayWidth = ed.GetDistance(System.Environment.NewLine);
+                    //Select Runway Class
                     PromptKeywordOptions AirportClassOptions = new PromptKeywordOptions("");
                     AirportClassOptions.Message = "\nRunway Class: ";
                     AirportClassOptions.Keywords.Add("A");
@@ -58,6 +53,34 @@ namespace OLS
                     AirportClassOptions.Keywords.Add("D");
                     AirportClassOptions.AllowNone = false;
                     PromptResult AirportClassKeyRes = cadDoc.Editor.GetKeywords(AirportClassOptions);
+                    if (AirportClassKeyRes.Status != PromptStatus.OK)
+                    {
+                        trans.Abort();
+                        return;
+                    }
+
+                    //Select profile
+                    PromptKeywordOptions profileOptions = new PromptKeywordOptions("");
+                    profileOptions.Message = "\nSelect Profile: ";
+                    int i = 1;
+                    string msg = "Avaliable profiles orders:";
+                    foreach (ObjectId profileId in runwayAlignment.GetProfileIds())
+                    {
+                        Profile tempProfile = trans.GetObject(profileId, OpenMode.ForWrite) as Profile;
+                        msg += "\n" + i.ToString() + "- " + tempProfile.Name;
+                        profileOptions.Keywords.Add(i++.ToString());
+                    }
+                    Application.ShowAlertDialog(msg);
+                    profileOptions.AllowNone = false;
+                    PromptResult profileKeyRes = cadDoc.Editor.GetKeywords(profileOptions);
+                    if (profileKeyRes.Status != PromptStatus.OK)
+                    {
+                        trans.Abort();
+                        return;
+                    }
+                    int profidId = int.Parse(profileKeyRes.StringResult) - 1;
+                    Profile profile = trans.GetObject(runwayAlignment.GetProfileIds()[profidId], OpenMode.ForWrite) as Profile;
+                    
                     #endregion
 
                     #region Detect Class from Database
@@ -83,20 +106,29 @@ namespace OLS
                     #endregion
 
                     #region Deticting Geometry Points
-                    Point3d startAlignment = runwayAlignment.StartPoint;
-                    double z = Profile.ElevationAt(runwayAlignment.StartingStation);
-                    startAlignment = new Point3d(startAlignment.X, startAlignment.Y, z);
-                    Point3d endAlignment = runwayAlignment.EndPoint;
+                    double dist = runwayAlignment.StartingStation;
+                    Point3d startAlignment = runwayAlignment.GetPointAtDist(profile.StartingStation - dist);  //runwayAlignment.StartPoint;
+                    double startAlignment_Z = profile.ElevationAt(profile.StartingStation);
+                    startAlignment = new Point3d(startAlignment.X, startAlignment.Y, startAlignment_Z);
+                    //Point3d startAlignment = runwayAlignment.StartPoint;
+                    /*double z = Profile.ElevationAt(runwayAlignment.StartingStation);
+                    startAlignment = new Point3d(startAlignment.X, startAlignment.Y, z);*/
+
+                    Point3d endAlignment = runwayAlignment.GetPointAtDist(profile.EndingStation - dist);  //runwayAlignment.StartPoint;
+                    double endAlignment_Z = profile.ElevationAt(profile.EndingStation);
+                    endAlignment = new Point3d(endAlignment.X, endAlignment.Y, endAlignment_Z);
+
+                    /*Point3d endAlignment = runwayAlignment.EndPoint;
                     z = Profile.ElevationAt(runwayAlignment.EndingStation);
-                    endAlignment = new Point3d(endAlignment.X, endAlignment.Y, z);
+                    endAlignment = new Point3d(endAlignment.X, endAlignment.Y, z);*/
 
                     double dX = startAlignment.X - endAlignment.X;
                     double dY = startAlignment.Y - endAlignment.Y;
                     double dZ = startAlignment.Z - endAlignment.Z;
 
-                    Vector3d startAlignmentVector = new Vector3d(dX, dY, dZ);
+                    Vector3d startAlignmentVector = new Vector3d(dX, dY, 0); //Not include deff of Z
                     startAlignmentVector = startAlignmentVector.GetNormal();
-                    Vector3d endAlignmentVector = new Vector3d(-dX, -dY, -dZ);
+                    Vector3d endAlignmentVector = new Vector3d(-dX, -dY, 0); //Not include deff of Z
                     endAlignmentVector = endAlignmentVector.GetNormal();
 
                     Vector3d startPrepAlignmentVector = startAlignmentVector.GetPerpendicularVector();
@@ -143,15 +175,16 @@ namespace OLS
                     transvare_OLS_End.CreatePolylines(acBlkTblRec, trans);
                     transvare_OLS_End.CreateSurface(_civildoc, trans);
                     #endregion
+
+                    trans.Commit();
                 }
                 catch (System.Exception ex)
                 {
                     #region Exception Handelling
-                    ed.WriteMessage(ex.Message);
+                    //ed.WriteMessage(ex.Message);
                     trans.Abort();
                     #endregion
                 }
-                trans.Commit();
             }
         }
     }
