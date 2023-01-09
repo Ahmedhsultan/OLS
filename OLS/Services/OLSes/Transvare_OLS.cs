@@ -16,6 +16,8 @@ namespace OLS.Services.OLSes
         public Point3d p2 { get; set; }
         public Point3d p3 { get; set; }
         public Point3d p4 { get; set; }
+        public Point3d p5 { get; set; }
+        public Point3d p6 { get; set; }
 
         public Transvare_OLS(TransvareAttriputes transvareAttriputes, LanddingAttriputes landdingAttriputes, InnerHorizontal_OLS innerHorizontal_OLS,
                                 Point3d startPoint, Point3d endPoint, Vector3d startVector3D, Vector3d endVector3D, Vector3d prependicularVector)
@@ -46,6 +48,18 @@ namespace OLS.Services.OLSes
             vector3DP3 = vector3DP3.GetNormal();
             l = (innerHorizontal_OLS.surfaceLevel - p2.Z ) / vector3DP3.Z;
             p3 = p2 + vector3DP3 * l;
+
+            double y5 = innerHorizontal_OLS.surfaceLevel - p1.Z;
+            double slope5 = transvareAttriputes.slope;
+            double x5 = y5 / slope5;
+            p5 = p1.Add(prependicularVector.MultiplyBy(x5));
+            p5 = new Point3d(p5.X,p5.Y, innerHorizontal_OLS.surfaceLevel);
+
+            double y6 = innerHorizontal_OLS.surfaceLevel - p2.Z;
+            double slope6 = transvareAttriputes.slope;
+            double x6 = y6 / slope6;
+            p6 = p2.Add(prependicularVector.MultiplyBy(x6));
+            p6 = new Point3d(p6.X, p6.Y, innerHorizontal_OLS.surfaceLevel);
         }
 
         public void CreatePolylines(BlockTableRecord acBlkTblRec, Transaction trans)
@@ -60,10 +74,14 @@ namespace OLS.Services.OLSes
             PolylineVertex3d vertexP2 = new PolylineVertex3d(p2);
             PolylineVertex3d vertexP3 = new PolylineVertex3d(p3);
             PolylineVertex3d vertexP4 = new PolylineVertex3d(p4);
+            PolylineVertex3d vertexP5 = new PolylineVertex3d(p5);
+            PolylineVertex3d vertexP6 = new PolylineVertex3d(p6);
 
             pl.AppendVertex(vertexP1);
             pl.AppendVertex(vertexP2);
             pl.AppendVertex(vertexP3);
+            pl.AppendVertex(vertexP6);
+            pl.AppendVertex(vertexP5);
             pl.AppendVertex(vertexP4);
             pl.Closed = true;
         }
@@ -90,14 +108,14 @@ namespace OLS.Services.OLSes
 }
 
 /*
- *  p4                                                                      p3
+ *  p4              p5                                  p6                  p3
  * 
  * 
  *                  p1                                  p2
  *  
  *                  p0                                  p00
  *  
- *                  p5                                  p6
+ *                  p9                                  p8
  *  
  *  
  *  p8                                                                      p7

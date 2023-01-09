@@ -17,7 +17,7 @@ namespace OLS.Services.OLSes
         public double topRadius { get; set; }
         public Conical_OLS(ConicalAttriputes conicalAttriputes, InnerHorizontal_OLS innerHorizontal_OLS)
         {
-            surfaceLevel = innerHorizontal_OLS.surfaceLevel;
+            /*surfaceLevel = innerHorizontal_OLS.surfaceLevel;
 
             double topCenter_X = innerHorizontal_OLS.center.X;
             double topCenter_Y = innerHorizontal_OLS.center.Y;
@@ -27,12 +27,12 @@ namespace OLS.Services.OLSes
 
             double deltaWidth = conicalAttriputes.slope * conicalAttriputes.height;
             topRadius = innerHorizontal_OLS.radius + deltaWidth;
-            buttmRadius = innerHorizontal_OLS.radius;
+            buttmRadius = innerHorizontal_OLS.radius;*/
         }
 
         public void CreatePolylines(BlockTableRecord acBlkTblRec, Transaction trans)
         {
-            buttomCirc = new Circle();
+            /*buttomCirc = new Circle();
             buttomCirc.SetDatabaseDefaults();
             buttomCirc.Center = buttomCenter;
             buttomCirc.Radius = buttmRadius;
@@ -44,12 +44,12 @@ namespace OLS.Services.OLSes
             topCirc.Center = topCenter;
             topCirc.Radius = topRadius;
             acBlkTblRec.AppendEntity(topCirc);
-            trans.AddNewlyCreatedDBObject(topCirc, true);
+            trans.AddNewlyCreatedDBObject(topCirc, true);*/
         }
 
         public void CreateSurface(CivilDocument _civildoc, Transaction trans)
         {
-            // Select a Surface style to use
+            /*// Select a Surface style to use
             ObjectId styleId = _civildoc.Styles.SurfaceStyles[0];
 
             //Breakline Entities collection
@@ -63,7 +63,7 @@ namespace OLS.Services.OLSes
                 ObjectId surfaceId = TinSurface.Create("Conical_OLS", styleId);
                 TinSurface surface = trans.GetObject(surfaceId, OpenMode.ForWrite) as TinSurface;
                 surface.BreaklinesDefinition.AddStandardBreaklines(contourEntitiesIdColl, 1.0, 100.00, 15.0, 4.0);
-            }
+            }*/
         }
     }
 }

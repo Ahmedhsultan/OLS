@@ -155,7 +155,8 @@ namespace OLS
                     landing_OLS_End.CreateSurface(_civildoc, trans);
 
                     //Inner Ols
-                    InnerHorizontal_OLS innerHorizontal_OLS = new InnerHorizontal_OLS(class_DB.innerHorizontalAttriputes, startAlignment, endAlignment);
+                    InnerHorizontal_OLS innerHorizontal_OLS = new InnerHorizontal_OLS(class_DB.innerHorizontalAttriputes, startAlignment, endAlignment, 
+                                                        startAlignmentVector, startPrepAlignmentVector, endAlignmentVector, endPrepAlignmentVector);
                     innerHorizontal_OLS.CreatePolylines(acBlkTblRec, trans);
                     innerHorizontal_OLS.CreateSurface(_civildoc, trans);
 
@@ -181,7 +182,7 @@ namespace OLS
                 catch (System.Exception ex)
                 {
                     #region Exception Handelling
-                    //ed.WriteMessage(ex.Message);
+                    ed.WriteMessage(ex.Message);
                     trans.Abort();
                     #endregion
                 }

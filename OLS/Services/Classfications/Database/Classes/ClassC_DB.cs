@@ -46,7 +46,7 @@ namespace OLS.Services.Classfications.Database.Classes
             };
             transvareAttriputes = new TransvareAttriputes()
             {
-                slope = 0.2
+                slope = 0.143
             };
         }
     }

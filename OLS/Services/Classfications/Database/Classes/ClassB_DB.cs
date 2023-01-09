@@ -27,7 +27,7 @@ namespace OLS.Services.Classfications.Database.Classes
                 safeArea = 60,
                 totalLength = 15000,
                 divargence = 0.15,
-                innerEdge = 60,
+                innerEdge = 280,
                 s1 = 0.02,
                 l1 = 3000,
                 s2 = 0.025,
