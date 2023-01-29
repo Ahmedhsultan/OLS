@@ -80,7 +80,7 @@ namespace OLS
                     }
                     int profidId = int.Parse(profileKeyRes.StringResult) - 1;
                     Profile profile = trans.GetObject(runwayAlignment.GetProfileIds()[profidId], OpenMode.ForWrite) as Profile;
-                    
+
                     #endregion
 
                     #region Detect Class from Database
@@ -107,20 +107,13 @@ namespace OLS
 
                     #region Deticting Geometry Points
                     double dist = runwayAlignment.StartingStation;
-                    Point3d startAlignment = runwayAlignment.GetPointAtDist(profile.StartingStation - dist);  //runwayAlignment.StartPoint;
+                    Point3d startAlignment = runwayAlignment.GetPointAtDist(profile.StartingStation - dist);
                     double startAlignment_Z = profile.ElevationAt(profile.StartingStation);
                     startAlignment = new Point3d(startAlignment.X, startAlignment.Y, startAlignment_Z);
-                    //Point3d startAlignment = runwayAlignment.StartPoint;
-                    /*double z = Profile.ElevationAt(runwayAlignment.StartingStation);
-                    startAlignment = new Point3d(startAlignment.X, startAlignment.Y, z);*/
 
-                    Point3d endAlignment = runwayAlignment.GetPointAtDist(profile.EndingStation - dist);  //runwayAlignment.StartPoint;
+                    Point3d endAlignment = runwayAlignment.GetPointAtDist(profile.EndingStation - dist);
                     double endAlignment_Z = profile.ElevationAt(profile.EndingStation);
                     endAlignment = new Point3d(endAlignment.X, endAlignment.Y, endAlignment_Z);
-
-                    /*Point3d endAlignment = runwayAlignment.EndPoint;
-                    z = Profile.ElevationAt(runwayAlignment.EndingStation);
-                    endAlignment = new Point3d(endAlignment.X, endAlignment.Y, z);*/
 
                     double dX = startAlignment.X - endAlignment.X;
                     double dY = startAlignment.Y - endAlignment.Y;
@@ -155,9 +148,9 @@ namespace OLS
                     landing_OLS_End.CreateSurface(_civildoc, trans);
 
                     //Inner Ols
-                    InnerHorizontal_OLS innerHorizontal_OLS = new InnerHorizontal_OLS(class_DB.innerHorizontalAttriputes, startAlignment, endAlignment, 
+                    InnerHorizontal_OLS innerHorizontal_OLS = new InnerHorizontal_OLS(class_DB.innerHorizontalAttriputes, startAlignment, endAlignment,
                                                         startAlignmentVector, startPrepAlignmentVector, endAlignmentVector, endPrepAlignmentVector);
-                    innerHorizontal_OLS.CreatePolylines(acBlkTblRec, trans);
+                    innerHorizontal_OLS.CreatePolylines(acBlkTblRec,trans, db, ed);
                     innerHorizontal_OLS.CreateSurface(_civildoc, trans);
 
                     //Conical Ols
@@ -166,12 +159,12 @@ namespace OLS
                     conical_OLS.CreateSurface(_civildoc, trans);
 
                     //Transtional Ols
-                    Transvare_OLS transvare_OLS_Start = new Transvare_OLS(class_DB.transvareAttriputes,class_DB.landdingAttriputes,innerHorizontal_OLS,
-                                        startAlignment, endAlignment,startAlignmentVector,endAlignmentVector ,startPrepAlignmentVector);
+                    Transvare_OLS transvare_OLS_Start = new Transvare_OLS(class_DB.transvareAttriputes, class_DB.landdingAttriputes, innerHorizontal_OLS,
+                                        startAlignment, endAlignment, startAlignmentVector, endAlignmentVector, startPrepAlignmentVector);
                     transvare_OLS_Start.CreatePolylines(acBlkTblRec, trans);
                     transvare_OLS_Start.CreateSurface(_civildoc, trans);
 
-                    Transvare_OLS transvare_OLS_End = new Transvare_OLS(class_DB.transvareAttriputes, class_DB.landdingAttriputes,innerHorizontal_OLS, 
+                    Transvare_OLS transvare_OLS_End = new Transvare_OLS(class_DB.transvareAttriputes, class_DB.landdingAttriputes, innerHorizontal_OLS,
                                         startAlignment, endAlignment, startAlignmentVector, endAlignmentVector, endPrepAlignmentVector);
                     transvare_OLS_End.CreatePolylines(acBlkTblRec, trans);
                     transvare_OLS_End.CreateSurface(_civildoc, trans);

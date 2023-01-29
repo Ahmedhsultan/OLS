@@ -37,7 +37,7 @@ namespace OLS.Services.Classfications.Database.Classes
             };
             innerHorizontalAttriputes = new InnerHorizontalAttriputes()
             {
-                radius = 2000
+                radius = 4000
             };
             conicalAttriputes = new ConicalAttriputes()
             {

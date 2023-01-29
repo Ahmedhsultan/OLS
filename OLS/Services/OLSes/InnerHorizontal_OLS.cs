@@ -1,4 +1,5 @@
 ﻿using Autodesk.AutoCAD.DatabaseServices;
+using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.Civil.ApplicationServices;
 using Autodesk.Civil.DatabaseServices;
@@ -16,12 +17,10 @@ namespace OLS.Services.OLSes
         public Point3d p4 { get; set; }
         public Point3d p5 { get; set; }
         public Point3d p6 { get; set; }
-        public Polyline3d pl1 { get; set; }
-        public Polyline3d pl2 { get; set; }
-        public Arc arc1 { get; set; }
-        public Arc arc2 { get; set; }
+        public Polyline pline { get; set; }
+        public TinSurface surface { get; set; }
 
-        public InnerHorizontal_OLS(InnerHorizontalAttriputes innerHorizontalAttriputes, Point3d startPoint, Point3d endPoint ,
+        public InnerHorizontal_OLS(InnerHorizontalAttriputes innerHorizontalAttriputes, Point3d startPoint, Point3d endPoint,
             Vector3d startAlignmentVector, Vector3d startPrepAlignmentVector, Vector3d endAlignmentVector, Vector3d endPrepAlignmentVector)
         {
             surfaceLevel = startPoint.Z > endPoint.Z ? startPoint.Z : endPoint.Z;
@@ -43,59 +42,36 @@ namespace OLS.Services.OLSes
             p5 = new Point3d(p5.X, p5.Y, surfaceLevel);
         }
 
-        public void CreatePolylines(BlockTableRecord acBlkTblRec, Transaction trans)
+        public void CreatePolylines(BlockTableRecord acBlkTblRec, Transaction trans, Database db, Editor ed)
         {
-            PolylineVertex3d vertexP2 = new PolylineVertex3d(p2);
-            PolylineVertex3d vertexP3 = new PolylineVertex3d(p3);
-            PolylineVertex3d vertexP4 = new PolylineVertex3d(p4);
-            PolylineVertex3d vertexP5 = new PolylineVertex3d(p5);
+            // convert points to 2d points
+            var plane = new Plane(Point3d.Origin, Vector3d.ZAxis);
+            var p12D = p1.Convert2d(plane);
+            var p22D = p2.Convert2d(plane);
+            var p32D = p3.Convert2d(plane);
+            var p42D = p4.Convert2d(plane);
+            var p52D = p5.Convert2d(plane);
+            var p62D = p6.Convert2d(plane);
 
-            pl1 = new Polyline3d();
-            pl1.SetDatabaseDefaults();
-            acBlkTblRec.AppendEntity(pl1);
-            trans.AddNewlyCreatedDBObject(pl1, true);
+            // compute the bulge of the second segment
+            double bulge = -Math.Tan(Math.PI / 8.0);
+            var curSpace = (BlockTableRecord)trans.GetObject(db.CurrentSpaceId, OpenMode.ForWrite);
+            pline = new Polyline();
 
-            pl1.AppendVertex(vertexP2);
-            pl1.AppendVertex(vertexP4);
+            //Add verticies to polyline
+            pline.AddVertexAt(0, p22D, bulge, 0.0, 0.0);
+            pline.AddVertexAt(1, p12D, bulge, 0.0, 0.0);
+            pline.AddVertexAt(2, p32D, 0.0, 0.0, 0.0);
+            pline.AddVertexAt(3, p52D, bulge, 0.0, 0.0);
+            pline.AddVertexAt(4, p62D, bulge, 0.0, 0.0);
+            pline.AddVertexAt(5, p42D, 0.0, 0.0, 0.0);
 
-            pl2 = new Polyline3d();
-            pl2.SetDatabaseDefaults();
-            acBlkTblRec.AppendEntity(pl2);
-            trans.AddNewlyCreatedDBObject(pl2, true);
+            pline.Closed = true;
 
-            pl2.AppendVertex(vertexP3);
-            pl2.AppendVertex(vertexP5);
-
-
-            CircularArc3d cArc1 = new CircularArc3d(p2, p1, p3);
-            double angle1 = cArc1.ReferenceVector.AngleOnPlane(new Plane(cArc1.Center, cArc1.Normal));
-
-            arc1 =new Arc(cArc1.Center, cArc1.Normal,cArc1.Radius, cArc1.StartAngle + angle1, cArc1.EndAngle + angle1);
-            cArc1.Dispose();
-            acBlkTblRec.AppendEntity(arc1);
-            trans.AddNewlyCreatedDBObject(arc1, true);
-
-            CircularArc3d cArc2 = new CircularArc3d(p5, p6, p4);
-            double angle2 = cArc2.ReferenceVector.AngleOnPlane(new Plane(cArc2.Center, cArc2.Normal));
-
-            arc2 = new Arc(cArc2.Center, cArc2.Normal, cArc2.Radius, cArc2.StartAngle + angle2, cArc2.EndAngle + angle2);
-            cArc2.Dispose();
-            acBlkTblRec.AppendEntity(arc2);
-            trans.AddNewlyCreatedDBObject(arc2, true);
-
-            var angle = cArc1.EndAngle - cArc1.StartAngle;
-            if (angle < 0)
-                angle += Math.PI * 2.0;
-            double bulge = Math.Tan(angle / 4.0);
-            Polyline pline = new Polyline(4);
-            pline.SetDatabaseDefaults();
-            acBlkTblRec.AppendEntity(pline);
+            //Append the polyline
+            pline.TransformBy(ed.CurrentUserCoordinateSystem);
+            curSpace.AppendEntity(pline);
             trans.AddNewlyCreatedDBObject(pline, true);
-            pline.AddVertexAt(0, new Point2d(p2.X, p2.Y), 0.0, 0.0, 0.0);
-            pline.AddVertexAt(1, new Point2d(p1.X, p1.Y), bulge, 0.0, 0.0);
-            pline.AddVertexAt(2, new Point2d(p3.X, p3.Y), 0.0, 0.0, 0.0);
-            pline.Normal = cArc1.Normal;
-            pline.TransformBy(Matrix3d.Displacement(cArc1.Center.GetAsVector()));
         }
 
         public void CreateSurface(CivilDocument _civildoc, Transaction trans)
@@ -105,15 +81,17 @@ namespace OLS.Services.OLSes
 
             //Breakline Entities collection
             ObjectIdCollection contourEntitiesIdColl = new ObjectIdCollection();
-            contourEntitiesIdColl.Add(pl1.ObjectId);
-            contourEntitiesIdColl.Add(pl2.ObjectId);
-            
+            contourEntitiesIdColl.Add(pline.ObjectId);
+
             if (styleId != null && contourEntitiesIdColl != null)
             {
                 // Create an empty TIN Surface
                 ObjectId surfaceId = TinSurface.Create("InnerHorizontal_OLS", styleId);
-                TinSurface surface = trans.GetObject(surfaceId, OpenMode.ForWrite) as TinSurface;
+                surface = trans.GetObject(surfaceId, OpenMode.ForWrite) as TinSurface;
                 surface.BreaklinesDefinition.AddStandardBreaklines(contourEntitiesIdColl, 1.0, 100.00, 15.0, 4.0);
+                //Readjust surface elevation
+                double diff = surfaceLevel - surface.FindElevationAtXY(p1.X, p1.Y);
+                surface.RaiseSurface(diff);
             }
         }
     }
