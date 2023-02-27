@@ -79,24 +79,6 @@ namespace OLS
 
                     #region Detect Class from Database
                     IClass_DB class_DB = null;
-                    /*OlsCodeAttriputesDB OlsDatabase = new OlsCodeAttriputesDB();
-                    switch (AirportClassKeyRes.StringResult)
-                    {
-                        case "A":
-                            class_DB = OlsDatabase.classA_DB;
-                            break;
-                        case "B":
-                            class_DB = OlsDatabase.classB_DB;
-                            break;
-                        case "C":
-                            class_DB = OlsDatabase.classC_DB;
-                            break;
-                        case "D":
-                            class_DB = OlsDatabase.classD_DB;
-                            break;
-                        default:
-                            break;
-                    }*/
                     class_DB = CastumClass_DB.getIntstance();
                     #endregion
 
