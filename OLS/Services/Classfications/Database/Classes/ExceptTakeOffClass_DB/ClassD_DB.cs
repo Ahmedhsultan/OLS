@@ -1,27 +1,17 @@
 ﻿using OLS.Services.Classfications.Database.Classes.InterfaceClass;
 using OLS.Services.Classfications.Database.Surfaces;
 
-namespace OLS.Services.Classfications.Database.Classes
+namespace OLS.Services.Classfications.Database.Classes.ExceptTakeOffClass_DB
 {
-    public class ClassB_DB : IClass_DB
+    public class ClassD_DB : IApproach_Class
     {
-        public TakeOffAttriputes takeOffAttriputes { get; set; }
         public LanddingAttriputes landdingAttriputes { get; set; }
         public ConicalAttriputes conicalAttriputes { get; set; }
         public TransvareAttriputes transvareAttriputes { get; set; }
         public InnerHorizontalAttriputes innerHorizontalAttriputes { get; set; }
 
-        public ClassB_DB()
+        public ClassD_DB()
         {
-            takeOffAttriputes = new TakeOffAttriputes()
-            {
-                safeArea = 60,
-                innerEdge = 180,
-                totalLength = 15000,
-                finalWidth = 1200,
-                divargence = 0.125,
-                slope = 0.02
-            };
             landdingAttriputes = new LanddingAttriputes()
             {
                 safeArea = 60,
@@ -37,12 +27,12 @@ namespace OLS.Services.Classfications.Database.Classes
             };
             innerHorizontalAttriputes = new InnerHorizontalAttriputes()
             {
-                radius = 2000
+                radius = 4000
             };
             conicalAttriputes = new ConicalAttriputes()
             {
                 slope = 0.05,
-                height = 35
+                height = 100
             };
             transvareAttriputes = new TransvareAttriputes()
             {

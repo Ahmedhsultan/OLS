@@ -7,8 +7,10 @@ using Autodesk.AutoCAD.Runtime;
 using Autodesk.Civil.ApplicationServices;
 using Autodesk.Civil.DatabaseServices;
 using OLS.Services.Classfications.Database;
+using OLS.Services.Classfications.Database.Classes;
 using OLS.Services.Classfications.Database.Classes.InterfaceClass;
 using OLS.Services.OLSes;
+using OLS.UI;
 #endregion
 
 namespace OLS
@@ -31,8 +33,15 @@ namespace OLS
                 BlockTable acBlkTbl = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
                 BlockTableRecord acBlkTblRec = trans.GetObject(acBlkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
                 #endregion
+
                 try
                 {
+                    #region Start UI
+                    //On click button it get and populate instance from CastumClass_DB
+                    Form1 form = new Form1();
+                    form.ShowDialog();
+                    #endregion
+
                     #region Selecting
                     //Select Runway Alignment
                     Alignment runwayAlignment = null;
@@ -43,21 +52,6 @@ namespace OLS
                         return;
                     }
                     runwayAlignment = trans.GetObject(sPrompt.ObjectId, OpenMode.ForRead) as Alignment;
-
-                    //Select Runway Class
-                    PromptKeywordOptions AirportClassOptions = new PromptKeywordOptions("");
-                    AirportClassOptions.Message = "\nRunway Class: ";
-                    AirportClassOptions.Keywords.Add("A");
-                    AirportClassOptions.Keywords.Add("B");
-                    AirportClassOptions.Keywords.Add("C");
-                    AirportClassOptions.Keywords.Add("D");
-                    AirportClassOptions.AllowNone = false;
-                    PromptResult AirportClassKeyRes = cadDoc.Editor.GetKeywords(AirportClassOptions);
-                    if (AirportClassKeyRes.Status != PromptStatus.OK)
-                    {
-                        trans.Abort();
-                        return;
-                    }
 
                     //Select profile
                     PromptKeywordOptions profileOptions = new PromptKeywordOptions("");
@@ -85,7 +79,7 @@ namespace OLS
 
                     #region Detect Class from Database
                     IClass_DB class_DB = null;
-                    OlsCodeAttriputesDB OlsDatabase = new OlsCodeAttriputesDB();
+                    /*OlsCodeAttriputesDB OlsDatabase = new OlsCodeAttriputesDB();
                     switch (AirportClassKeyRes.StringResult)
                     {
                         case "A":
@@ -102,7 +96,8 @@ namespace OLS
                             break;
                         default:
                             break;
-                    }
+                    }*/
+                    class_DB = CastumClass_DB.getIntstance();
                     #endregion
 
                     #region Deticting Geometry Points

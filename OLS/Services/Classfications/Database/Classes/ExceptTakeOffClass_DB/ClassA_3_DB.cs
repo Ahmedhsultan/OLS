@@ -1,52 +1,42 @@
 ﻿using OLS.Services.Classfications.Database.Classes.InterfaceClass;
 using OLS.Services.Classfications.Database.Surfaces;
 
-namespace OLS.Services.Classfications.Database.Classes
+namespace OLS.Services.Classfications.Database.Classes.ExceptTakeOffClass_DB
 {
-    public class ClassA_DB : IClass_DB
+    public class ClassA_3_DB : IApproach_Class
     {
-        public TakeOffAttriputes takeOffAttriputes { get; set; }
         public LanddingAttriputes landdingAttriputes { get; set; }
         public ConicalAttriputes conicalAttriputes { get; set; }
         public TransvareAttriputes transvareAttriputes { get; set; }
         public InnerHorizontalAttriputes innerHorizontalAttriputes { get; set; }
 
-        public ClassA_DB()
+        public ClassA_3_DB()
         {
-            takeOffAttriputes = new TakeOffAttriputes()
-            {
-                safeArea = 60,
-                innerEdge = 180,
-                totalLength = 15000,
-                finalWidth = 1200,
-                divargence = 0.125,
-                slope = 0.02
-            };
             landdingAttriputes = new LanddingAttriputes()
             {
                 safeArea = 60,
-                totalLength = 15000,
-                divargence = 0.15,
-                innerEdge = 60,
-                s1 = 0.02,
+                totalLength = 3000,
+                divargence = 0.1,
+                innerEdge = 150,
+                s1 = 0.0333,
                 l1 = 3000,
-                s2 = 0.025,
-                l2 = 3600,
+                s2 = 0,
+                l2 = 0,
                 s3 = 0,
-                l3 = 8400
+                l3 = 0
             };
             innerHorizontalAttriputes = new InnerHorizontalAttriputes()
             {
-                radius = 2000
+                radius = 4000
             };
             conicalAttriputes = new ConicalAttriputes()
             {
                 slope = 0.05,
-                height = 35
+                height = 75
             };
             transvareAttriputes = new TransvareAttriputes()
             {
-                slope = 0.2
+                slope = 0.143
             };
         }
     }

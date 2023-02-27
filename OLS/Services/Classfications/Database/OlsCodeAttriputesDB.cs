@@ -9,17 +9,17 @@ namespace OLS.Services.Classfications.Database
 {
     public class OlsCodeAttriputesDB
     {
-        public ClassA_DB classA_DB { get; set; }
-        public ClassB_DB classB_DB { get; set; }
+   /*     public ClassA_1_DB classA_DB { get; set; }
+        public ClassB_1_DB classB_DB { get; set; }
         public ClassC_DB classC_DB { get; set; }
         public ClassD_DB classD_DB { get; set; }
 
         public OlsCodeAttriputesDB()
         {
-            classA_DB = new ClassA_DB();
+            classA_DB = new ClassA_1_DB();
             classB_DB = new ClassB_DB();
             classC_DB = new ClassC_DB();
             classD_DB = new ClassD_DB();
-        }
+        }*/
     }
 }

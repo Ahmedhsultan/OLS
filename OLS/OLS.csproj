@@ -48,6 +48,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -59,11 +61,23 @@
     <Compile Include="OLS.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Classfications\AirportClasses.cs" />
-    <Compile Include="Services\Classfications\Database\Classes\ClassD_DB.cs" />
-    <Compile Include="Services\Classfications\Database\Classes\ClassC_DB.cs" />
-    <Compile Include="Services\Classfications\Database\Classes\ClassB_DB.cs" />
-    <Compile Include="Services\Classfications\Database\Classes\ClassA_DB.cs" />
+    <Compile Include="Services\Classfications\Database\Classes\CastumClass_DB.cs" />
+    <Compile Include="Services\Classfications\Database\Classes\ExceptTakeOffClass_DB\ClassA_3_DB.cs" />
+    <Compile Include="Services\Classfications\Database\Classes\ExceptTakeOffClass_DB\ClassA_4_DB.cs" />
+    <Compile Include="Services\Classfications\Database\Classes\ExceptTakeOffClass_DB\ClassA_2_DB.cs" />
+    <Compile Include="Services\Classfications\Database\Classes\ExceptTakeOffClass_DB\ClassB_2_DB.cs" />
+    <Compile Include="Services\Classfications\Database\Classes\ExceptTakeOffClass_DB\ClassC_2_DB.cs" />
+    <Compile Include="Services\Classfications\Database\Classes\ExceptTakeOffClass_DB\ClassC_1_DB.cs" />
+    <Compile Include="Services\Classfications\Database\Classes\ExceptTakeOffClass_DB\ClassB_3_DB.cs" />
+    <Compile Include="Services\Classfications\Database\Classes\ExceptTakeOffClass_DB\ClassD_DB.cs" />
+    <Compile Include="Services\Classfications\Database\Classes\ExceptTakeOffClass_DB\ClassB_1_DB.cs" />
+    <Compile Include="Services\Classfications\Database\Classes\ExceptTakeOffClass_DB\ClassA_1_DB.cs" />
+    <Compile Include="Services\Classfications\Database\Classes\ExceptTakeOffClass_DB\IApproach_Class.cs" />
     <Compile Include="Services\Classfications\Database\Classes\InterfaceClass\IClass_DB.cs" />
+    <Compile Include="Services\Classfications\Database\Classes\TakeOffClass_DB\ITakeOff_Class.cs" />
+    <Compile Include="Services\Classfications\Database\Classes\TakeOffClass_DB\TakeOff_Class3.cs" />
+    <Compile Include="Services\Classfications\Database\Classes\TakeOffClass_DB\TakeOff_Class2.cs" />
+    <Compile Include="Services\Classfications\Database\Classes\TakeOffClass_DB\TakeOff_Class1.cs" />
     <Compile Include="Services\Classfications\Database\OlsCodeAttriputesDB.cs" />
     <Compile Include="Services\Classfications\Database\Surfaces\InnerHorizontalAttriputes.cs" />
     <Compile Include="Services\Classfications\Database\Surfaces\TransvareAttriputes.cs" />
@@ -75,6 +89,17 @@
     <Compile Include="Services\OLSes\Landding_OLS.cs" />
     <Compile Include="Services\OLSes\Transvare_OLS.cs" />
     <Compile Include="Services\OLSes\TakeOff_OLS.cs" />
+    <Compile Include="UI\Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,39 +1,29 @@
 ﻿using OLS.Services.Classfications.Database.Classes.InterfaceClass;
 using OLS.Services.Classfications.Database.Surfaces;
 
-namespace OLS.Services.Classfications.Database.Classes
+namespace OLS.Services.Classfications.Database.Classes.ExceptTakeOffClass_DB
 {
-    public class ClassC_DB : IClass_DB
+    public class ClassA_4_DB : IApproach_Class
     {
-        public TakeOffAttriputes takeOffAttriputes { get; set; }
         public LanddingAttriputes landdingAttriputes { get; set; }
         public ConicalAttriputes conicalAttriputes { get; set; }
         public TransvareAttriputes transvareAttriputes { get; set; }
         public InnerHorizontalAttriputes innerHorizontalAttriputes { get; set; }
 
-        public ClassC_DB()
+        public ClassA_4_DB()
         {
-            takeOffAttriputes = new TakeOffAttriputes()
-            {
-                safeArea = 60,
-                innerEdge = 180,
-                totalLength = 15000,
-                finalWidth = 1200,
-                divargence = 0.125,
-                slope = 0.02
-            };
             landdingAttriputes = new LanddingAttriputes()
             {
                 safeArea = 60,
-                totalLength = 15000,
-                divargence = 0.15,
-                innerEdge = 280,
-                s1 = 0.02,
+                totalLength = 3000,
+                divargence = 0.1,
+                innerEdge = 150,
+                s1 = 0.025,
                 l1 = 3000,
-                s2 = 0.025,
-                l2 = 3600,
+                s2 = 0,
+                l2 = 0,
                 s3 = 0,
-                l3 = 8400
+                l3 = 0
             };
             innerHorizontalAttriputes = new InnerHorizontalAttriputes()
             {
@@ -42,7 +32,7 @@ namespace OLS.Services.Classfications.Database.Classes
             conicalAttriputes = new ConicalAttriputes()
             {
                 slope = 0.05,
-                height = 35
+                height = 100
             };
             transvareAttriputes = new TransvareAttriputes()
             {
