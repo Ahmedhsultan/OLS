@@ -1,7 +1,9 @@
 ﻿using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 using OLS.Services.Util;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OLS.Services.OLSes
 {
@@ -58,10 +60,33 @@ namespace OLS.Services.OLSes
                     }
                 }
             }
+            trans.Commit();
         }
         public void mergePolylinesWithTangents()
         {
-            
+            foreach (var polyline in surfacePolylineList)
+                foreach (var tangent1 in tangentPolylinesList)
+                {
+                    Point3dCollection ptc = new Point3dCollection();
+                    polyline.IntersectWith(tangent1, Intersect.OnBothOperands, ptc, IntPtr.Zero, IntPtr.Zero);
+                    if (ptc.Count == 1)
+                        foreach (var tangent2 in tangentPolylinesList)
+                        {
+                            polyline.IntersectWith(tangent2, Intersect.OnBothOperands, ptc, IntPtr.Zero, IntPtr.Zero);
+                            if (ptc.Count == 2)
+                            {
+                                DBObjectCollection dbc = polyline.GetSplitCurves(new Point3dCollection(ptc.Cast<Point3d>().Distinct().OrderBy(p => polyline.GetDistAtPoint(p)).ToArray()));
+                                foreach (Entity item in dbc)
+                                {
+                                    var curSpace = (BlockTableRecord)trans.GetObject(db.CurrentSpaceId, OpenMode.ForWrite);
+                                    curSpace.AppendEntity(item);
+                                    trans.AddNewlyCreatedDBObject(item, true);
+                                }
+                                goto parent;
+                            }
+                        }
+                }
+            parent:;
         }
     }
 }

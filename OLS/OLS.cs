@@ -31,11 +31,10 @@ namespace OLS
             Database db = cadDoc.Database;
             #endregion
 
-            using (Transaction trans = db.TransactionManager.StartTransaction())
+            using (Transaction trans = db.TransactionManager.StartOpenCloseTransaction())
             {
                 #region Decuments
                 BlockTable acBlkTbl = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
-                BlockTableRecord acBlkTblRec = trans.GetObject(acBlkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
                 #endregion
                 #region clear DB
                 //Clear runways data
@@ -123,51 +122,59 @@ namespace OLS
                         #region Drawing Surfaces
                         //TakeOff Ols
                         TakeOff_OLS takeOff_OLS_Start = new TakeOff_OLS(class_DB.takeOffAttriputes, startAlignment, startAlignmentVector, startPrepAlignmentVector);
-                        takeOff_OLS_Start.CreatePolylines(acBlkTblRec, trans);
+                        takeOff_OLS_Start.CreatePolylines(db, trans);
                         takeOff_OLS_Start.CreateSurface(_civildoc, trans);
                         runway.takeOff_OLS_Start = takeOff_OLS_Start;
+                        trans.Commit();
 
                         TakeOff_OLS takeOff_OLS_End = new TakeOff_OLS(class_DB.takeOffAttriputes, endAlignment, endAlignmentVector, endPrepAlignmentVector);
-                        takeOff_OLS_End.CreatePolylines(acBlkTblRec, trans);
+                        takeOff_OLS_End.CreatePolylines(db, trans);
                         takeOff_OLS_End.CreateSurface(_civildoc, trans);
                         runway.takeOff_OLS_End = takeOff_OLS_End;
+                        trans.Commit();
 
                         //Landing Ols
                         Landding_OLS landing_OLS_Start = new Landding_OLS(class_DB.landdingAttriputes, startAlignment, startAlignmentVector, startPrepAlignmentVector);
-                        landing_OLS_Start.CreatePolylines(acBlkTblRec, trans);
+                        landing_OLS_Start.CreatePolylines(db, trans);
                         landing_OLS_Start.CreateSurface(_civildoc, trans);
                         runway.landding_OLS_Start = landing_OLS_Start;
+                        trans.Commit();
 
                         Landding_OLS landing_OLS_End = new Landding_OLS(class_DB.landdingAttriputes, endAlignment, endAlignmentVector, endPrepAlignmentVector);
-                        landing_OLS_End.CreatePolylines(acBlkTblRec, trans);
+                        landing_OLS_End.CreatePolylines(db, trans);
                         landing_OLS_End.CreateSurface(_civildoc, trans);
                         runway.landding_OLS_Start = landing_OLS_End;
+                        trans.Commit();
 
                         //Inner Ols
                         InnerHorizontal_OLS innerHorizontal_OLS = new InnerHorizontal_OLS(class_DB.innerHorizontalAttriputes, startAlignment, endAlignment,
                                                             startAlignmentVector, startPrepAlignmentVector, endAlignmentVector, endPrepAlignmentVector);
-                        innerHorizontal_OLS.CreatePolylines(acBlkTblRec, trans, db, ed);
+                        innerHorizontal_OLS.CreatePolylines(trans, db, ed);
                         innerHorizontal_OLS.CreateSurface(_civildoc, trans);
                         runway.innerHorizontal_OLS = innerHorizontal_OLS;
+                        trans.Commit();
 
                         //Conical Ols
                         Conical_OLS conical_OLS = new Conical_OLS(class_DB.conicalAttriputes, innerHorizontal_OLS);
-                        conical_OLS.CreatePolylines(acBlkTblRec, trans);
+                        conical_OLS.CreatePolylines(db, trans);
                         conical_OLS.CreateSurface(_civildoc, trans);
                         runway.conical_OLS = conical_OLS;
+                        trans.Commit();
 
                         //Transtional Ols
                         Transvare_OLS transvare_OLS_Start = new Transvare_OLS(class_DB.transvareAttriputes, class_DB.landdingAttriputes, innerHorizontal_OLS,
                                             startAlignment, endAlignment, startAlignmentVector, endAlignmentVector, startPrepAlignmentVector);
-                        transvare_OLS_Start.CreatePolylines(acBlkTblRec, trans);
+                        transvare_OLS_Start.CreatePolylines(db, trans);
                         transvare_OLS_Start.CreateSurface(_civildoc, trans);
                         runway.transvare_OLS_Start = transvare_OLS_Start;
+                        trans.Commit();
 
                         Transvare_OLS transvare_OLS_End = new Transvare_OLS(class_DB.transvareAttriputes, class_DB.landdingAttriputes, innerHorizontal_OLS,
                                             startAlignment, endAlignment, startAlignmentVector, endAlignmentVector, endPrepAlignmentVector);
-                        transvare_OLS_End.CreatePolylines(acBlkTblRec, trans);
+                        transvare_OLS_End.CreatePolylines(db, trans);
                         transvare_OLS_End.CreateSurface(_civildoc, trans);
                         runway.transvare_OLS_End = transvare_OLS_End;
+                        trans.Commit();
                         #endregion
                     }
 
@@ -175,24 +182,21 @@ namespace OLS
                     //Merge conical and hl ols by tangent functionality
                     if (RunwayDB.getInstance().runwaysList.Count > 1)
                     {
-                        //List of tangents
-                        List<Polyline> tangents;
-
                         //Get tangent and merge innerhorizontal ols
                         List<Polyline> polylines1 = new List<Polyline>();
                         RunwayDB.getInstance().runwaysList.ForEach(x => polylines1.Add(x.innerHorizontal_OLS.pline));
                         var boundry1 = new MergeConnicalAndHL_OLS(trans, db, polylines1);
                         boundry1.getTangent();
-                        tangents = boundry1.tangentPolylinesList;
+                        boundry1.mergePolylinesWithTangents();
+                        trans.Commit();
 
                         //Get tangent and merge conical ols
                         List<Polyline> polylines2 = new List<Polyline>();
                         RunwayDB.getInstance().runwaysList.ForEach(x => polylines2.Add(x.conical_OLS.pline));
                         var boundry2 = new MergeConnicalAndHL_OLS(trans, db, polylines2);
                         boundry2.getTangent();
-                        tangents.AddRange(boundry2.tangentPolylinesList);
-
-
+                        boundry2.mergePolylinesWithTangents();
+                        trans.Commit();
                     }
                     #endregion
 

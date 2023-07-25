@@ -42,7 +42,7 @@ namespace OLS.Services.OLSes
             p5 = new Point3d(p5.X, p5.Y, surfaceLevel);
         }
 
-        public void CreatePolylines(BlockTableRecord acBlkTblRec, Transaction trans, Database db, Editor ed)
+        public void CreatePolylines(Transaction trans, Database db, Editor ed)
         {
             // convert points to 2d points
             var plane = new Plane(Point3d.Origin, Vector3d.ZAxis);
@@ -72,6 +72,7 @@ namespace OLS.Services.OLSes
             pline.TransformBy(ed.CurrentUserCoordinateSystem);
             curSpace.AppendEntity(pline);
             trans.AddNewlyCreatedDBObject(pline, true);
+            trans.Commit();
         }
 
         public void CreateSurface(CivilDocument _civildoc, Transaction trans)

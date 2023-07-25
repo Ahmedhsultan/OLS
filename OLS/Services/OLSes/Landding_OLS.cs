@@ -47,11 +47,13 @@ namespace OLS.Services.OLSes
             p7 = new Point3d(p7.X, p7.Y, z2);
         }
 
-        public void CreatePolylines(BlockTableRecord acBlkTblRec, Transaction trans)
+        public void CreatePolylines(Database db, Transaction trans)
         {
             pl = new Polyline3d();
             pl.SetDatabaseDefaults();
-            acBlkTblRec.AppendEntity(pl);
+
+            var curSpace = (BlockTableRecord)trans.GetObject(db.CurrentSpaceId, OpenMode.ForWrite);
+            curSpace.AppendEntity(pl);
             trans.AddNewlyCreatedDBObject(pl, true);
 
             PolylineVertex3d vertexP1 = new PolylineVertex3d(p1);
@@ -72,6 +74,8 @@ namespace OLS.Services.OLSes
             pl.AppendVertex(vertexP5);
             pl.AppendVertex(vertexP4);
             pl.Closed = true;
+
+            trans.Commit();
         }
 
         public void CreateSurface(CivilDocument _civildoc, Transaction trans)

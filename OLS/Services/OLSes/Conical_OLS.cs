@@ -18,7 +18,7 @@ namespace OLS.Services.OLSes
             deltaWidth = conicalAttriputes.height / conicalAttriputes.slope;
         }
 
-        public void CreatePolylines(BlockTableRecord acBlkTblRec, Transaction trans)
+        public void CreatePolylines(Database db, Transaction trans)
         {
             DBObjectCollection acDbObjColl = innerHorizontal_OLS.pline.GetOffsetCurves(-deltaWidth);
             // Step through the new objects created
@@ -28,8 +28,11 @@ namespace OLS.Services.OLSes
                 //Rise pline
                 pline.Elevation = surfaceLevel;
                 // Add each offset object
-                acBlkTblRec.AppendEntity(acEnt);
+                var curSpace = (BlockTableRecord)trans.GetObject(db.CurrentSpaceId, OpenMode.ForWrite);
+                curSpace.AppendEntity(acEnt);
                 trans.AddNewlyCreatedDBObject(acEnt, true);
+
+                trans.Commit();
             }
         }
 
