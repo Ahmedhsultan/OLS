@@ -15,7 +15,7 @@ namespace OLS.Services.OLSes
         {
             this.innerHorizontal_OLS = innerHorizontal_OLS;
             surfaceLevel = innerHorizontal_OLS.surfaceLevel + conicalAttriputes.height;
-            deltaWidth = conicalAttriputes.slope * conicalAttriputes.height;
+            deltaWidth = conicalAttriputes.height / conicalAttriputes.slope;
         }
 
         public void CreatePolylines(BlockTableRecord acBlkTblRec, Transaction trans)
@@ -25,6 +25,8 @@ namespace OLS.Services.OLSes
             foreach (Autodesk.AutoCAD.DatabaseServices.Entity acEnt in acDbObjColl)
             {
                 pline = acEnt as Polyline;
+                //Rise pline
+                pline.Elevation = surfaceLevel;
                 // Add each offset object
                 acBlkTblRec.AppendEntity(acEnt);
                 trans.AddNewlyCreatedDBObject(acEnt, true);
@@ -39,19 +41,17 @@ namespace OLS.Services.OLSes
             //Breakline Entities collection
             ObjectIdCollection contourEntitiesIdColl = new ObjectIdCollection();
             contourEntitiesIdColl.Add(pline.ObjectId);
-            contourEntitiesIdColl.Add(pline.ObjectId);
+            //contourEntitiesIdColl.Add(pline.ObjectId);
 
             if (styleId != null && contourEntitiesIdColl != null)
             {
                 // Create an empty TIN Surface
                 ObjectId surfaceId = TinSurface.Create("Conical_OLS", styleId);
                 TinSurface surface = trans.GetObject(surfaceId, OpenMode.ForWrite) as TinSurface;
-                surface.BreaklinesDefinition.AddStandardBreaklines(contourEntitiesIdColl, 1.0, 100.00, 15.0, 4.0);
-                //Readjust surface elevation
-                double diff = surfaceLevel - surface.FindElevationAtXY(innerHorizontal_OLS.p1.X, innerHorizontal_OLS.p1.Y);
-                surface.RaiseSurface(diff);
                 //Past innerHorizontal surface in conical surface
                 surface.PasteSurface(innerHorizontal_OLS.surface.ObjectId);
+                //Add breakline to top conical
+                surface.BreaklinesDefinition.AddStandardBreaklines(contourEntitiesIdColl, 1.0, 100.00, 15.0, 4.0);
             }
         }
     }

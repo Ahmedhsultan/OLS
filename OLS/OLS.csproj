@@ -59,7 +59,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="OLS.cs" />
+    <Compile Include="Persistence\Models\Objects\UserInputs.cs" />
+    <Compile Include="Persistence\Models\Runway.cs" />
+    <Compile Include="Persistence\RunwayDB.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Services\Classfications\AirportClasses.cs" />
     <Compile Include="Services\Classfications\Database\Classes\CastumClass_DB.cs" />
     <Compile Include="Services\Classfications\Database\Classes\ExceptTakeOffClass_DB\ClassA_3_DB.cs" />
@@ -87,18 +95,35 @@
     <Compile Include="Services\OLSes\Conical_OLS.cs" />
     <Compile Include="Services\OLSes\InnerHorizontal_OLS.cs" />
     <Compile Include="Services\OLSes\Landding_OLS.cs" />
+    <Compile Include="Services\OLSes\MergeConnicalAndHL_OLS.cs" />
     <Compile Include="Services\OLSes\Transvare_OLS.cs" />
     <Compile Include="Services\OLSes\TakeOff_OLS.cs" />
-    <Compile Include="UI\Form1.cs">
+    <Compile Include="Services\Util\FilterSelection.cs" />
+    <Compile Include="Services\Util\GetTangentsToCircle.cs" />
+    <Compile Include="UI\AlignmentDataForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="UI\AlignmentDataForm.Designer.cs">
+      <DependentUpon>AlignmentDataForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ComponentsContainer.cs" />
+    <Compile Include="UI\ClassficationDataForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\ClassficationDataForm.Designer.cs">
+      <DependentUpon>ClassficationDataForm.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="UI\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\AlignmentDataForm.resx">
+      <DependentUpon>AlignmentDataForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\ClassficationDataForm.resx">
+      <DependentUpon>ClassficationDataForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

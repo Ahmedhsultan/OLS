@@ -1,6 +1,6 @@
 ﻿namespace OLS.UI
 {
-    partial class Form1
+    partial class ClassficationDataForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ClassficationDataForm));
             this.button1 = new System.Windows.Forms.Button();
             this.conical_slope = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -35,8 +36,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.conical_height = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.innerhl_height = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.innerhl_radius = new System.Windows.Forms.TextBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -148,32 +147,14 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Controls.Add(this.innerhl_height);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.innerhl_radius);
             this.groupBox2.Location = new System.Drawing.Point(6, 137);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(224, 95);
+            this.groupBox2.Size = new System.Drawing.Size(224, 57);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "INNER HORIZONTAL";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(19, 58);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(38, 13);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "Height";
-            // 
-            // innerhl_height
-            // 
-            this.innerhl_height.Location = new System.Drawing.Point(110, 51);
-            this.innerhl_height.Name = "innerhl_height";
-            this.innerhl_height.Size = new System.Drawing.Size(108, 20);
-            this.innerhl_height.TabIndex = 3;
             // 
             // label4
             // 
@@ -399,7 +380,7 @@
             // 
             this.groupBox8.Controls.Add(this.label19);
             this.groupBox8.Controls.Add(this.transitional_slope);
-            this.groupBox8.Location = new System.Drawing.Point(6, 256);
+            this.groupBox8.Location = new System.Drawing.Point(6, 220);
             this.groupBox8.Name = "groupBox8";
             this.groupBox8.Size = new System.Drawing.Size(224, 51);
             this.groupBox8.TabIndex = 13;
@@ -582,8 +563,9 @@
             this.Controls.Add(this.groupBox11);
             this.Controls.Add(this.groupBox10);
             this.Controls.Add(this.button1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "RunnwayData";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -614,8 +596,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox conical_height;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox innerhl_height;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox innerhl_radius;
         private System.Windows.Forms.GroupBox groupBox4;

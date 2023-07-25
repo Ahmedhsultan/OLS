@@ -8,14 +8,17 @@ using OLS.Services.Classfications.Database.Surfaces;
 
 namespace OLS.UI
 {
-    public partial class Form1 : Form
+    public partial class ClassficationDataForm : Form
     {
         private ITakeOff_Class takeOff_Class;
 
-        public Form1()
+        public ClassficationDataForm()
         {
             takeOff_Class = new TakeOff_Class1();
             InitializeComponent();
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.StartPosition = FormStartPosition.CenterScreen;
+
             this.comboBox2.Items.Add("Class A_1");
             this.comboBox2.Items.Add("Class A_2");
             this.comboBox2.Items.Add("Class A_3");
