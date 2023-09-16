@@ -4,6 +4,8 @@ using Autodesk.Civil.ApplicationServices;
 using Autodesk.Civil.DatabaseServices;
 using OLS.Services.Classfications.Database.Surfaces;
 using System;
+using System.Collections.Generic;
+using OLS.Persistence.Models;
 
 namespace OLS.Services.OLSes
 {
@@ -18,8 +20,9 @@ namespace OLS.Services.OLSes
         public Point3d p4 { get; set; }
         public Point3d p5 { get; set; }
         public Point3d p6 { get; set; }
+        public List<PolylineVertex3d> polylineVertex3ds { get; set; } = new List<PolylineVertex3d>();
 
-        public Transvare_OLS(TransvareAttriputes transvareAttriputes, LanddingAttriputes landdingAttriputes, InnerHorizontal_OLS innerHorizontal_OLS,
+        public Transvare_OLS(Runway runway, TransvareAttriputes transvareAttriputes, LanddingAttriputes landdingAttriputes, InnerHorizontal_OLS innerHorizontal_OLS,
                                 Point3d startPoint, Point3d endPoint, Vector3d startVector3D, Vector3d endVector3D, Vector3d prependicularVector)
         {
             //Upper Transational OLS
@@ -71,6 +74,10 @@ namespace OLS.Services.OLSes
             trans.AddNewlyCreatedDBObject(pl, true);
 
             PolylineVertex3d vertexP1 = new PolylineVertex3d(p1);
+
+            List<PolylineVertex3d> polylineVertex3ds = new List<PolylineVertex3d>();
+            
+            
             PolylineVertex3d vertexP2 = new PolylineVertex3d(p2);
             PolylineVertex3d vertexP3 = new PolylineVertex3d(p3);
             PolylineVertex3d vertexP4 = new PolylineVertex3d(p4);
@@ -78,6 +85,9 @@ namespace OLS.Services.OLSes
             PolylineVertex3d vertexP6 = new PolylineVertex3d(p6);
 
             pl.AppendVertex(vertexP1);
+            
+            
+            
             pl.AppendVertex(vertexP2);
             pl.AppendVertex(vertexP3);
             pl.AppendVertex(vertexP6);
@@ -103,6 +113,54 @@ namespace OLS.Services.OLSes
                 TinSurface surface1 = trans.GetObject(surfaceId1, OpenMode.ForWrite) as TinSurface;
                 surface1.ContoursDefinition.AddContours(contourEntitiesIdColl1, 1.0, 100.00, 15.0, 4.0);
             }
+        }
+
+        private List<Point3d> getIntermediatePoints(Point3d startPoint, Point3d endPoint, double interval)
+        {
+            //calc the distance between start and end point and calc the normal of start vector from start point to end point
+            double dist = startPoint.DistanceTo(endPoint);
+            Vector3d startNormalVector = startPoint.GetVectorTo(endPoint).GetNormal();
+
+            //Result list
+            List<Point3d> intermediatePoints = new List<Point3d>();
+
+            //increment the interval and calc the new point and add it to the list
+            Vector3d newVector;
+            Point3d endPointOfNewVector;
+            for (double i = 0; i < dist; i =+interval )
+            {
+                newVector = startNormalVector.MultiplyBy(i);
+                endPointOfNewVector = startPoint.Add(newVector);
+                intermediatePoints.Add(endPointOfNewVector);
+            }
+            
+            return intermediatePoints;
+        }
+
+        private List<Point3d> addElevationToListOfPointFromAlignmentProfile(List<Point3d> points, Alignment alignment,
+            Profile profile)
+        {
+            List<Point3d> pointsWithElevation = new List<Point3d>();
+            
+            foreach (Point3d point in points)
+            {
+                try
+                {
+                    //Get elevation of this point on profile by cala the point location on alignment first
+                    Point3d pointOnAlignment = alignment.GetClosestPointTo(point, false);
+                    double stationOfPoint = alignment.GetDistAtPoint(pointOnAlignment);
+                    double elevation = profile.ElevationAt(stationOfPoint);
+
+                    //Get the old coordinate then add new elevation to the new point
+                    Point3d newPointWithElevation = new Point3d(point.X, point.Y, elevation);
+                    
+                    //Add the new point to the result list
+                    pointsWithElevation.Add(newPointWithElevation);
+                }
+                catch (Exception e) { }
+            }
+
+            return pointsWithElevation;
         }
     }
 }

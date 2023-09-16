@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OLS.Persistence.Models
 {
-    internal class Runway
+    public class Runway
     {
         public Alignment alignment { get; set; }
         public Profile profile { get; set; }

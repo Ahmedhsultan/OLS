@@ -8,7 +8,6 @@ using Autodesk.Civil.ApplicationServices;
 using Autodesk.Civil.DatabaseServices;
 using OLS.Persistence;
 using OLS.Persistence.Models;
-using OLS.Services.Classfications.Database;
 using OLS.Services.Classfications.Database.Classes;
 using OLS.Services.Classfications.Database.Classes.InterfaceClass;
 using OLS.Services.OLSes;
@@ -157,13 +156,13 @@ namespace OLS
                         runway.conical_OLS = conical_OLS;
 
                         //Transtional Ols
-                        Transvare_OLS transvare_OLS_Start = new Transvare_OLS(class_DB.transvareAttriputes, class_DB.landdingAttriputes, innerHorizontal_OLS,
+                        Transvare_OLS transvare_OLS_Start = new Transvare_OLS(runway, class_DB.transvareAttriputes, class_DB.landdingAttriputes, innerHorizontal_OLS,
                                             startAlignment, endAlignment, startAlignmentVector, endAlignmentVector, startPrepAlignmentVector);
                         transvare_OLS_Start.CreatePolylines(acBlkTblRec, trans);
                         transvare_OLS_Start.CreateSurface(_civildoc, trans);
                         runway.transvare_OLS_Start = transvare_OLS_Start;
 
-                        Transvare_OLS transvare_OLS_End = new Transvare_OLS(class_DB.transvareAttriputes, class_DB.landdingAttriputes, innerHorizontal_OLS,
+                        Transvare_OLS transvare_OLS_End = new Transvare_OLS(runway, class_DB.transvareAttriputes, class_DB.landdingAttriputes, innerHorizontal_OLS,
                                             startAlignment, endAlignment, startAlignmentVector, endAlignmentVector, endPrepAlignmentVector);
                         transvare_OLS_End.CreatePolylines(acBlkTblRec, trans);
                         transvare_OLS_End.CreateSurface(_civildoc, trans);
