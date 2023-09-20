@@ -156,16 +156,16 @@ namespace OLS
                         runway.conical_OLS = conical_OLS;
 
                         //Transtional Ols
-                        Transvare_OLS transvare_OLS_Start = new Transvare_OLS(runway, class_DB.transvareAttriputes, class_DB.landdingAttriputes, innerHorizontal_OLS,
+                        Transvare_OLS transvare_OLS_Start = new Transvare_OLS(trans, runway, class_DB.transvareAttriputes, class_DB.landdingAttriputes, innerHorizontal_OLS,
                                             startAlignment, endAlignment, startAlignmentVector, endAlignmentVector, startPrepAlignmentVector);
-                        transvare_OLS_Start.CreatePolylines(acBlkTblRec, trans);
-                        transvare_OLS_Start.CreateSurface(_civildoc, trans);
+                        transvare_OLS_Start.CreatePolylines(acBlkTblRec);
+                        transvare_OLS_Start.CreateSurface(_civildoc);
                         runway.transvare_OLS_Start = transvare_OLS_Start;
 
-                        Transvare_OLS transvare_OLS_End = new Transvare_OLS(runway, class_DB.transvareAttriputes, class_DB.landdingAttriputes, innerHorizontal_OLS,
+                        Transvare_OLS transvare_OLS_End = new Transvare_OLS(trans, runway, class_DB.transvareAttriputes, class_DB.landdingAttriputes, innerHorizontal_OLS,
                                             startAlignment, endAlignment, startAlignmentVector, endAlignmentVector, endPrepAlignmentVector);
-                        transvare_OLS_End.CreatePolylines(acBlkTblRec, trans);
-                        transvare_OLS_End.CreateSurface(_civildoc, trans);
+                        transvare_OLS_End.CreatePolylines(acBlkTblRec);
+                        transvare_OLS_End.CreateSurface(_civildoc);
                         runway.transvare_OLS_End = transvare_OLS_End;
                         #endregion
                     }

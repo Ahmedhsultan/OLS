@@ -20,12 +20,19 @@ namespace OLS.Services.OLSes
         public Point3d p4 { get; set; }
         public Point3d p5 { get; set; }
         public Point3d p6 { get; set; }
+        public List<Point3d> p1ToP2 { get; set; } = new List<Point3d>();
+        public List<Point3d> p5ToP6 { get; set; } = new List<Point3d>();
         public List<PolylineVertex3d> polylineVertex3ds { get; set; } = new List<PolylineVertex3d>();
+        public Transaction ts { get; set; }
+        public Runway runway { get; set; }
 
-        public Transvare_OLS(Runway runway, TransvareAttriputes transvareAttriputes, LanddingAttriputes landdingAttriputes, InnerHorizontal_OLS innerHorizontal_OLS,
+        public Transvare_OLS(Transaction ts, Runway runway, TransvareAttriputes transvareAttriputes, LanddingAttriputes landdingAttriputes, InnerHorizontal_OLS innerHorizontal_OLS,
                                 Point3d startPoint, Point3d endPoint, Vector3d startVector3D, Vector3d endVector3D, Vector3d prependicularVector)
         {
-            //Upper Transational OLS
+            this.ts = ts;
+            this.runway = runway;
+            
+            //Upper Transactional OLS
             p0 = startPoint.Add(startVector3D.MultiplyBy(landdingAttriputes.safeArea));
             p1 = p0.Add(prependicularVector.MultiplyBy(landdingAttriputes.innerEdge/2));
 
@@ -63,42 +70,49 @@ namespace OLS.Services.OLSes
             double x6 = y6 / slope6;
             p6 = p2.Add(prependicularVector.MultiplyBy(x6));
             p6 = new Point3d(p6.X, p6.Y, innerHorizontal_OLS.surfaceLevel);
+            
+            List<Point3d> pointsP1ToP2NoElevation = getIntermediatePoints(p1, p2, 1);
+            p1ToP2 = elevationFromProfile(pointsP1ToP2NoElevation, runway.profile);
+
+            double minusP5P6 = p5.Z - p1.Z;
+            List<Point3d> pointsP5ToP6NoElevation = getIntermediatePoints(p5, p6, 1);
+            for (int i = 0; i < pointsP5ToP6NoElevation.Count; i++)
+            {
+                Point3d point = pointsP5ToP6NoElevation[i];
+                p5ToP6.Add(new Point3d(point.X, point.Y, pointsP1ToP2NoElevation[i].Z));
+            }
         }
 
-        public void CreatePolylines(BlockTableRecord acBlkTblRec, Transaction trans)
+        public void CreatePolylines(BlockTableRecord acBlkTblRec)
         {
-            //Upper Transational OLS
+            //Upper Transactional OLS
             pl = new Polyline3d();
             pl.SetDatabaseDefaults();
             acBlkTblRec.AppendEntity(pl);
-            trans.AddNewlyCreatedDBObject(pl, true);
-
-            PolylineVertex3d vertexP1 = new PolylineVertex3d(p1);
-
+            ts.AddNewlyCreatedDBObject(pl, true);
+            
+            //Convert from Point3d to PolylineVertex3d
             List<PolylineVertex3d> polylineVertex3ds = new List<PolylineVertex3d>();
-            
-            
-            PolylineVertex3d vertexP2 = new PolylineVertex3d(p2);
-            PolylineVertex3d vertexP3 = new PolylineVertex3d(p3);
-            PolylineVertex3d vertexP4 = new PolylineVertex3d(p4);
-            PolylineVertex3d vertexP5 = new PolylineVertex3d(p5);
-            PolylineVertex3d vertexP6 = new PolylineVertex3d(p6);
+            polylineVertex3ds.Add(new PolylineVertex3d(p1));
+            p1ToP2.ForEach(x => polylineVertex3ds.Add(new PolylineVertex3d(x)));
+            polylineVertex3ds.Add(new PolylineVertex3d(p2));
+            polylineVertex3ds.Add(new PolylineVertex3d(p3));
+            polylineVertex3ds.Add(new PolylineVertex3d(p4));
+            polylineVertex3ds.Add(new PolylineVertex3d(p5));
+            p5ToP6.ForEach(x => polylineVertex3ds.Add(new PolylineVertex3d(x)));
+            polylineVertex3ds.Add(new PolylineVertex3d(p6));
 
-            pl.AppendVertex(vertexP1);
+            //Add polylinwVertex3d to the pl
+            foreach (var vertex in polylineVertex3ds)
+                pl.AppendVertex(vertex);
             
-            
-            
-            pl.AppendVertex(vertexP2);
-            pl.AppendVertex(vertexP3);
-            pl.AppendVertex(vertexP6);
-            pl.AppendVertex(vertexP5);
-            pl.AppendVertex(vertexP4);
+            //Close the polyline
             pl.Closed = true;
         }
 
-        public void CreateSurface(CivilDocument _civildoc, Transaction trans)
+        public void CreateSurface(CivilDocument _civildoc)
         {
-            //Upper Transational OLS
+            //Upper Transactional OLS
             // Select a Surface style to use
             ObjectId styleId = _civildoc.Styles.SurfaceStyles[0];
 
@@ -110,7 +124,7 @@ namespace OLS.Services.OLSes
             {
                 // Create an empty TIN Surface
                 ObjectId surfaceId1 = TinSurface.Create("Transation_OLS", styleId); //Refactor Naming
-                TinSurface surface1 = trans.GetObject(surfaceId1, OpenMode.ForWrite) as TinSurface;
+                TinSurface surface1 = ts.GetObject(surfaceId1, OpenMode.ForWrite) as TinSurface;
                 surface1.ContoursDefinition.AddContours(contourEntitiesIdColl1, 1.0, 100.00, 15.0, 4.0);
             }
         }
@@ -137,9 +151,9 @@ namespace OLS.Services.OLSes
             return intermediatePoints;
         }
 
-        private List<Point3d> addElevationToListOfPointFromAlignmentProfile(List<Point3d> points, Alignment alignment,
-            Profile profile)
+        private List<Point3d> elevationFromProfile(List<Point3d> points, Profile profile)
         {
+            Alignment alignment = ts.GetObject(profile.AlignmentId, OpenMode.ForRead) as Alignment;
             List<Point3d> pointsWithElevation = new List<Point3d>();
             
             foreach (Point3d point in points)
