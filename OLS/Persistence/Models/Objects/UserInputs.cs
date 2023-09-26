@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OLS.Persistence.Models.Objects
 {
-    internal class UserInputs
+    public class UserInputs
     {
         public List<Profile> allProfiles { get; set; }
         public double startStation { get; set; }
