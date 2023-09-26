@@ -66,6 +66,8 @@ namespace OLS.Services.OLSes
             pline.AddVertexAt(4, p62D, bulge, 0.0, 0.0);
             pline.AddVertexAt(5, p42D, 0.0, 0.0, 0.0);
 
+            pline.Elevation = surfaceLevel;
+
             pline.Closed = true;
 
             //Append the polyline
@@ -90,9 +92,6 @@ namespace OLS.Services.OLSes
                 ObjectId surfaceId = TinSurface.Create("InnerHorizontal_OLS", styleId);
                 surface = trans.GetObject(surfaceId, OpenMode.ForWrite) as TinSurface;
                 surface.BreaklinesDefinition.AddStandardBreaklines(contourEntitiesIdColl, 1.0, 100.00, 15.0, 4.0);
-                //Readjust surface elevation
-                double diff = surfaceLevel - surface.FindElevationAtXY(p1.X, p1.Y);
-                surface.RaiseSurface(diff);
             }
         }
     }

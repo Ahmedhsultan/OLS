@@ -8,7 +8,6 @@ using Autodesk.Civil.ApplicationServices;
 using Autodesk.Civil.DatabaseServices;
 using OLS.Persistence;
 using OLS.Persistence.Models;
-using OLS.Services.Classfications.Database;
 using OLS.Services.Classfications.Database.Classes;
 using OLS.Services.Classfications.Database.Classes.InterfaceClass;
 using OLS.Services.OLSes;
@@ -81,6 +80,8 @@ namespace OLS
                     #endregion
 
                     #region Start UI
+                    //Message to save before use
+                    Application.ShowAlertDialog("Warning: Please save your work before using any tool.");
                     //Get Profile, startstation and endstation
                     AlignmentDataForm alignmentData = new AlignmentDataForm();
                     alignmentData.ShowDialog();
@@ -94,7 +95,7 @@ namespace OLS
                     class_DB = CastumClass_DB.getIntstance();
                     #endregion
 
-                    foreach(Runway runway in RunwayDB.getInstance().runwaysList)
+                    foreach (Runway runway in RunwayDB.getInstance().runwaysList)
                     {
                         #region Deticting Geometry Points
                         double dist = runway.alignment.StartingStation;
@@ -150,14 +151,12 @@ namespace OLS
                         InnerHorizontal_OLS innerHorizontal_OLS = new InnerHorizontal_OLS(class_DB.innerHorizontalAttriputes, startAlignment, endAlignment,
                                                             startAlignmentVector, startPrepAlignmentVector, endAlignmentVector, endPrepAlignmentVector);
                         innerHorizontal_OLS.CreatePolylines(trans, db, ed);
-                        innerHorizontal_OLS.CreateSurface(_civildoc, trans);
                         runway.innerHorizontal_OLS = innerHorizontal_OLS;
                         trans.Commit();
 
                         //Conical Ols
                         Conical_OLS conical_OLS = new Conical_OLS(class_DB.conicalAttriputes, innerHorizontal_OLS);
                         conical_OLS.CreatePolylines(db, trans);
-                        conical_OLS.CreateSurface(_civildoc, trans);
                         runway.conical_OLS = conical_OLS;
                         trans.Commit();
 
@@ -188,6 +187,7 @@ namespace OLS
                         var boundry1 = new MergeConnicalAndHL_OLS(trans, db, polylines1);
                         boundry1.getTangent();
                         boundry1.mergePolylinesWithTangents();
+                        boundry1.CreateInnerHLSurface(_civildoc);
                         trans.Commit();
 
                         //Get tangent and merge conical ols
@@ -196,7 +196,18 @@ namespace OLS
                         var boundry2 = new MergeConnicalAndHL_OLS(trans, db, polylines2);
                         boundry2.getTangent();
                         boundry2.mergePolylinesWithTangents();
+                        boundry2.createConicalSurface(_civildoc, boundry1.innerHLSurface);
                         trans.Commit();
+                    }
+                    else
+                    {
+                        foreach (Runway runway in RunwayDB.getInstance().runwaysList)
+                        {
+                            //Create innerHL surface
+                            runway.innerHorizontal_OLS.CreateSurface(_civildoc, trans);
+                            //Create conical surface
+                            runway.conical_OLS.CreateSurface(_civildoc, trans);
+                        }
                     }
                     #endregion
 
