@@ -163,14 +163,14 @@ namespace OLS
                         //Transtional Ols
                         Transvare_OLS transvare_OLS_Start = new Transvare_OLS(trans, runway, class_DB.transvareAttriputes, class_DB.landdingAttriputes, innerHorizontal_OLS,
                                             startAlignment, endAlignment, startAlignmentVector, endAlignmentVector, startPrepAlignmentVector);
-                        transvare_OLS_Start.CreatePolylines(acBlkTblRec);
+                        transvare_OLS_Start.CreatePolylines(db);
                         transvare_OLS_Start.CreateSurface(_civildoc);
                         runway.transvare_OLS_Start = transvare_OLS_Start;
                         trans.Commit();
 
                         Transvare_OLS transvare_OLS_End = new Transvare_OLS(trans, runway, class_DB.transvareAttriputes, class_DB.landdingAttriputes, innerHorizontal_OLS,
                                             startAlignment, endAlignment, startAlignmentVector, endAlignmentVector, endPrepAlignmentVector);
-                        transvare_OLS_End.CreatePolylines(acBlkTblRec);
+                        transvare_OLS_End.CreatePolylines(db);
                         transvare_OLS_End.CreateSurface(_civildoc);
                         runway.transvare_OLS_End = transvare_OLS_End;
                         trans.Commit();

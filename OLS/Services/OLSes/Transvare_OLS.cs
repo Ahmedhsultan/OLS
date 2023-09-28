@@ -21,7 +21,7 @@ namespace OLS.Services.OLSes
         public Point3d p5 { get; set; }
         public Point3d p6 { get; set; }
         public List<Point3d> p1ToP2 { get; set; } = new List<Point3d>();
-        public List<Point3d> p5ToP6 { get; set; } = new List<Point3d>();
+        public List<Point3d> p6ToP5 { get; set; } = new List<Point3d>();
         public List<PolylineVertex3d> polylineVertex3ds { get; set; } = new List<PolylineVertex3d>();
         public Transaction ts { get; set; }
         public Runway runway { get; set; }
@@ -71,36 +71,39 @@ namespace OLS.Services.OLSes
             p6 = p2.Add(prependicularVector.MultiplyBy(x6));
             p6 = new Point3d(p6.X, p6.Y, innerHorizontal_OLS.surfaceLevel);
             
-            List<Point3d> pointsP1ToP2NoElevation = getIntermediatePoints(p1, p2, 1);
+            List<Point3d> pointsP1ToP2NoElevation = getIntermediatePoints(p1, p2, 10);
             p1ToP2 = elevationFromProfile(pointsP1ToP2NoElevation, runway.profile);
 
             double minusP5P6 = p5.Z - p1.Z;
-            List<Point3d> pointsP5ToP6NoElevation = getIntermediatePoints(p5, p6, 1);
-            for (int i = 0; i < pointsP5ToP6NoElevation.Count; i++)
+            List<Point3d> pointsP6ToP5NoElevation = getIntermediatePoints(p6, p5, 10);
+            List<Point3d> pointsP6ToP5WithElev = elevationFromProfile(pointsP6ToP5NoElevation, runway.profile);
+
+            for (int i = 0; i < pointsP6ToP5WithElev.Count; i++)
             {
-                Point3d point = pointsP5ToP6NoElevation[i];
-                p5ToP6.Add(new Point3d(point.X, point.Y, pointsP1ToP2NoElevation[i].Z));
+                Point3d point = pointsP6ToP5WithElev[i];
+                p6ToP5.Add(new Point3d(point.X, point.Y, point.Z+minusP5P6));
             }
         }
 
-        public void CreatePolylines(BlockTableRecord acBlkTblRec)
+        public void CreatePolylines(Database db)
         {
             //Upper Transactional OLS
             pl = new Polyline3d();
             pl.SetDatabaseDefaults();
-            acBlkTblRec.AppendEntity(pl);
+            var curSpace = (BlockTableRecord)ts.GetObject(db.CurrentSpaceId, OpenMode.ForWrite);
+            curSpace.AppendEntity(pl);
             ts.AddNewlyCreatedDBObject(pl, true);
-            
+
             //Convert from Point3d to PolylineVertex3d
             List<PolylineVertex3d> polylineVertex3ds = new List<PolylineVertex3d>();
             polylineVertex3ds.Add(new PolylineVertex3d(p1));
             p1ToP2.ForEach(x => polylineVertex3ds.Add(new PolylineVertex3d(x)));
             polylineVertex3ds.Add(new PolylineVertex3d(p2));
             polylineVertex3ds.Add(new PolylineVertex3d(p3));
-            polylineVertex3ds.Add(new PolylineVertex3d(p4));
-            polylineVertex3ds.Add(new PolylineVertex3d(p5));
-            p5ToP6.ForEach(x => polylineVertex3ds.Add(new PolylineVertex3d(x)));
             polylineVertex3ds.Add(new PolylineVertex3d(p6));
+            p6ToP5.ForEach(x => polylineVertex3ds.Add(new PolylineVertex3d(x)));
+            polylineVertex3ds.Add(new PolylineVertex3d(p5));
+            polylineVertex3ds.Add(new PolylineVertex3d(p4));
 
             //Add polylinwVertex3d to the pl
             foreach (var vertex in polylineVertex3ds)
@@ -109,7 +112,7 @@ namespace OLS.Services.OLSes
             //Close the polyline
             pl.Closed = true;
 
-            trans.Commit();
+            ts.Commit();
         }
 
         public void CreateSurface(CivilDocument _civildoc)
@@ -143,7 +146,7 @@ namespace OLS.Services.OLSes
             //increment the interval and calc the new point and add it to the list
             Vector3d newVector;
             Point3d endPointOfNewVector;
-            for (double i = 0; i < dist; i =+interval )
+            for (double i = interval; i < dist; i+=interval)
             {
                 newVector = startNormalVector.MultiplyBy(i);
                 endPointOfNewVector = startPoint.Add(newVector);
