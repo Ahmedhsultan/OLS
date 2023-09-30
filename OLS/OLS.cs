@@ -80,7 +80,7 @@ namespace OLS
                     #endregion
 
                     #region Start UI
-                    //Message to save before use
+                    //Message to save before use 
                     Application.ShowAlertDialog("Warning: Please save your work before using any tool.");
                     //Get Profile, startstation and endstation
                     AlignmentDataForm alignmentData = new AlignmentDataForm();

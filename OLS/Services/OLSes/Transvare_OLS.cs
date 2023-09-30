@@ -167,8 +167,10 @@ namespace OLS.Services.OLSes
                 {
                     //Get elevation of this point on profile by cala the point location on alignment first
                     Point3d pointOnAlignment = alignment.GetClosestPointTo(point, false);
-                    double stationOfPoint = alignment.GetDistAtPoint(pointOnAlignment);
-                    double elevation = profile.ElevationAt(stationOfPoint);
+                    double startStation = alignment.StartingStation;
+                    double distanceToPointOnAlignment = alignment.GetDistAtPoint(pointOnAlignment);
+                    double stationOnProfile = distanceToPointOnAlignment + startStation;
+                    double elevation = profile.ElevationAt(stationOnProfile);
 
                     //Get the old coordinate then add new elevation to the new point
                     Point3d newPointWithElevation = new Point3d(point.X, point.Y, elevation);
