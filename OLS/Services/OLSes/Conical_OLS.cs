@@ -46,6 +46,7 @@ namespace OLS.Services.OLSes
             contourEntitiesIdColl.Add(pline.ObjectId);
             //contourEntitiesIdColl.Add(pline.ObjectId);
 
+            trans.Commit();
             if (styleId != null && contourEntitiesIdColl != null)
             {
                 // Create an empty TIN Surface
