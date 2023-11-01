@@ -42,7 +42,7 @@ namespace OLS.Services.OLSes
             p5 = new Point3d(p5.X, p5.Y, surfaceLevel);
         }
 
-        public void CreatePolylines(BlockTableRecord acBlkTblRec, Transaction trans, Database db, Editor ed)
+        public void CreatePolylines(Transaction trans, Database db, Editor ed)
         {
             // convert points to 2d points
             var plane = new Plane(Point3d.Origin, Vector3d.ZAxis);
@@ -66,12 +66,15 @@ namespace OLS.Services.OLSes
             pline.AddVertexAt(4, p62D, bulge, 0.0, 0.0);
             pline.AddVertexAt(5, p42D, 0.0, 0.0, 0.0);
 
+            pline.Elevation = surfaceLevel;
+
             pline.Closed = true;
 
             //Append the polyline
             pline.TransformBy(ed.CurrentUserCoordinateSystem);
             curSpace.AppendEntity(pline);
             trans.AddNewlyCreatedDBObject(pline, true);
+            trans.Commit();
         }
 
         public void CreateSurface(CivilDocument _civildoc, Transaction trans)
@@ -89,9 +92,6 @@ namespace OLS.Services.OLSes
                 ObjectId surfaceId = TinSurface.Create("InnerHorizontal_OLS", styleId);
                 surface = trans.GetObject(surfaceId, OpenMode.ForWrite) as TinSurface;
                 surface.BreaklinesDefinition.AddStandardBreaklines(contourEntitiesIdColl, 1.0, 100.00, 15.0, 4.0);
-                //Readjust surface elevation
-                double diff = surfaceLevel - surface.FindElevationAtXY(p1.X, p1.Y);
-                surface.RaiseSurface(diff);
             }
         }
     }

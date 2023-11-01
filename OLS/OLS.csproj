@@ -32,25 +32,37 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="accoremgd">
-      <HintPath>..\..\..\cad dlls\accoremgd.dll</HintPath>
+      <HintPath>..\..\dlls\accoremgd.dll</HintPath>
     </Reference>
     <Reference Include="acdbmgd">
-      <HintPath>..\..\Civil labal overlaping\Civil labal overlaping\bin\Debug\acdbmgd.dll</HintPath>
+      <HintPath>..\..\dlls\acdbmgd.dll</HintPath>
     </Reference>
     <Reference Include="Acdbmgd">
       <HintPath>..\..\..\cad dlls\acdbmgd.dll</HintPath>
     </Reference>
     <Reference Include="acmgd">
-      <HintPath>..\..\Civil labal overlaping\Civil labal overlaping\bin\Debug\acmgd.dll</HintPath>
+      <HintPath>..\..\dlls\acmgd.dll</HintPath>
     </Reference>
     <Reference Include="Acmgd">
       <HintPath>..\..\..\cad dlls\acmgd.dll</HintPath>
     </Reference>
     <Reference Include="AecBaseMgd">
-      <HintPath>..\..\..\cad dlls\AecBaseMgd.dll</HintPath>
+      <HintPath>..\..\dlls\AecBaseMgd.dll</HintPath>
+    </Reference>
+    <Reference Include="AeccAdpMgd">
+      <HintPath>..\..\dlls\AeccAdpMgd.dll</HintPath>
+    </Reference>
+    <Reference Include="AeccCOGOEditor">
+      <HintPath>..\..\dlls\AeccCOGOEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="AeccCogoMgd">
+      <HintPath>..\..\dlls\AeccCogoMgd.dll</HintPath>
     </Reference>
     <Reference Include="AeccDbMgd">
-      <HintPath>..\..\..\cad dlls\AeccDbMgd.dll</HintPath>
+      <HintPath>..\..\dlls\AeccDbMgd.dll</HintPath>
+    </Reference>
+    <Reference Include="AeccExportToDwgDgn">
+      <HintPath>..\..\dlls\AeccExportToDwgDgn.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
