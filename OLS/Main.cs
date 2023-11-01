@@ -18,10 +18,10 @@ using System.Collections.Generic;
 
 namespace OLS
 {
-    public class OLS
+    public class Main
     {
         [CommandMethod("dar_Draw_OLS", CommandFlags.UsePickSet)]
-        public void Main()
+        public void run()
         {
             #region Documents
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;

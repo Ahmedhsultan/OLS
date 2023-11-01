@@ -64,7 +64,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="OLS.cs" />
+    <Compile Include="Main.cs" />
     <Compile Include="Persistence\Models\Objects\UserInputs.cs" />
     <Compile Include="Persistence\Models\Runway.cs" />
     <Compile Include="Persistence\RunwayDB.cs" />
